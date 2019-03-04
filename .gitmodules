@@ -1,0 +1,15 @@
+[submodule "src/drone_control/src/drone_control"]
+	path = src/drone_control/src/drone_control
+	url = https://github.com/AJahueyM/MicroDronITESM_DroneControl.git
+[submodule "src/mav_comm"]
+	path = src/mav_comm
+	url = https://github.com/ethz-asl/mav_comm.git
+[submodule "src/octomap_msgs"]
+	path = src/octomap_msgs
+	url = https://github.com/OctoMap/octomap_msgs.git
+[submodule "src/octomap_ros"]
+	path = src/octomap_ros
+	url = https://github.com/OctoMap/octomap_ros.git
+[submodule "src/rotors_simulator"]
+	path = src/rotors_simulator
+	url = https://github.com/ethz-asl/rotors_simulator.git
