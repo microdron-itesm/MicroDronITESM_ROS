@@ -11,9 +11,9 @@ Drone::Drone() {
     DRONE_CTRL_INITIALIZE();
 }
 void Drone::onImuMessageReceived(const sensor_msgs::Imu::ConstPtr& msg){
-    yaw = -msg->orientation.z;
+    yaw = msg->orientation.z;
     pitch = -msg->orientation.y;
-    roll = -msg->orientation.x;
+    roll = msg->orientation.x;
 }
 
 void Drone::onPoseReceived(const geometry_msgs::Pose::ConstPtr& msg){
