@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(drone_control)
 
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake")
+
 find_package(catkin REQUIRED COMPONENTS
   roscpp)
 find_package(SFML REQUIRED network audio graphics window system)
@@ -9,7 +11,7 @@ catkin_package(
    CATKIN_DEPENDS roscpp
 )
 
-link_libraries(${catkin_LIBRARIES} sfml-graphics sfml-window sfml-system)
+link_libraries(${catkin_LIBRARIES} ${SFML_LIBRARIES})
 
 include_directories(
   ${catkin_INCLUDE_DIRS}
