@@ -9,6 +9,34 @@ Drone::Drone() {
     imuSub = nodeHandle.subscribe("/iris/imu", 1000, &Drone::onImuMessageReceived , this);
     poseSub = nodeHandle.subscribe("/iris/ground_truth/pose", 1000, &Drone::onPoseReceived, this);
     DRONE_CTRL_INITIALIZE();
+    PID_CONFIG yawPID, pitchPID, rollPID, heightPID;
+    yawPID.p = 0.2;
+    yawPID.i = 0.0;
+    yawPID.d = 5.0;
+    yawPID.clampled = true;
+    yawPID.max =  0.4;
+    yawPID.min = -0.4;
+
+    pitchPID.p = 0.3;
+    pitchPID.i = 0.0;
+    pitchPID.d = 6.0;
+    pitchPID.clampled = false;
+
+    rollPID.p = 0.3;
+    rollPID.i = 0.0;
+    rollPID.d = 6.0;
+    rollPID.clampled = false;
+
+    heightPID.p = 1.5;
+    heightPID.i = 0.0;
+    heightPID.d = 20.0;
+    heightPID.clampled = false;
+
+    DRONE_CTRL_SET_YAW_PID(yawPID);
+    DRONE_CTRL_SET_PITCH_PID(pitchPID);
+    DRONE_CTRL_SET_ROLL_PID(rollPID);
+    DRONE_CTRL_SET_HEIGHT_PID(heightPID);
+
 }
 void Drone::onImuMessageReceived(const sensor_msgs::Imu::ConstPtr& msg){
     yaw = msg->orientation.z;
@@ -23,12 +51,12 @@ void Drone::onPoseReceived(const geometry_msgs::Pose::ConstPtr& msg){
 
 void Drone::update() {
     DRONE_POSE newPose;
-    newPose.height = static_cast<float>(height);
+    newPose.zAccel = static_cast<float>(height);
     newPose.pitch = static_cast<float>(pitch);
     newPose.roll = static_cast<float>(roll);
     newPose.yaw = static_cast<float>(yaw);
 
-    DRONE_CTRL_UPDATE(newPose);
+    DRONE_CTRL_UPDATE(newPose, 0);
 
 
 

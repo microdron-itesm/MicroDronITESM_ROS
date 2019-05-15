@@ -54,9 +54,11 @@ int main(int argc, char **argv) {
         }
 
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::Q)){
-            drone.setTargetYaw(drone.getYaw() + -1  *  M_PI / 180.0 );
+            drone.setTargetYaw(30 *  M_PI / 180.0 );
         }else if(sf::Keyboard::isKeyPressed(sf::Keyboard::E)){
-            drone.setTargetYaw(drone.getYaw() + 1 *  M_PI / 180.0);
+            drone.setTargetYaw(-30 *  M_PI / 180.0);
+        }else{
+            drone.setTargetYaw(0);
         }
 
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::R)) {
