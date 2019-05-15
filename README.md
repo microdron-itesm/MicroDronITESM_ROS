@@ -13,7 +13,13 @@ This is used to test the drone control code used in the MicroDron.
 
 To compile the project use:
 ```
+cd MicroDronITESM_ROS
+```
+```
 catkin_make
+```
+```
+source devel/setup.bash
 ```
 To run the simulation use:
 ```
