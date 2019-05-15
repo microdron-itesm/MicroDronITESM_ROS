@@ -1,4 +1,6 @@
 # MicroDronITESM_ROS
+Clone with:
+'git clone --recurse-submodules'
 
 Make sure to install the needed dependencies
 On Ubuntu: 
