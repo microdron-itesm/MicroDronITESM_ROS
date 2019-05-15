@@ -26,7 +26,7 @@ To run the simulation use:
 roslaunch rotors_gazebo mav.launch mav_name:=iris world_name:=basic paused:=false
 ```
 
-To run the control node use:
+To run the control node open another terminal, source devel/setup.bash and use:
 ```
 rosrun drone_control drone_control_node
 ```
