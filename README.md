@@ -6,7 +6,7 @@ git clone --recurse-submodules https://github.com/AJahueyM/MicroDronITESM_ROS.gi
 Make sure to install the needed dependencies
 On Ubuntu: 
 ```
-sudo apt-get install ros-melodic-desktop-full ros-melodic-octomap libgoogle-glog-dev
+sudo apt-get install ros-melodic-desktop-full ros-melodic-octomap libgoogle-glog-dev libsfml-dev 
 ```
 
 This is used to test the drone control code used in the MicroDron.
