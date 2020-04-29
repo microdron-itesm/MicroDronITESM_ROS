@@ -5,23 +5,20 @@
 #include "Drone.h"
 
 Drone::Drone() {
-    angularVelocityPub = nodeHandle.advertise<mav_msgs::Actuators>("/iris/command/motor_speed", 1000);
-    imuSub = nodeHandle.subscribe("/iris/ground_truth/imu", 1000, &Drone::onImuMessageReceived , this);
-    poseSub = nodeHandle.subscribe("/iris/ground_truth/pose", 1000, &Drone::onPoseReceived, this);
+    angularVelocityPub = nodeHandle.advertise<mav_msgs::Actuators>("/ardrone/command/motor_speed", 1000);
+    imuSub = nodeHandle.subscribe("/ardrone/ground_truth/imu", 1000, &Drone::onImuMessageReceived , this);
+    poseSub = nodeHandle.subscribe("/ardrone/ground_truth/pose", 1000, &Drone::onPoseReceived, this);
     SimplePIDConfig yawConfig, pitchConfig, rollConfig, heightConfig;
 
-    yawConfig.p = 0.6;
+    yawConfig.p = 0.7;
     yawConfig.i = 0.0;
-    yawConfig.d = 0.1;
-    yawConfig.clampedOutput = true;
-    yawConfig.max = 0.2;
-    yawConfig.min = -0.2;
+    yawConfig.d = 0.8;
 
-    pitchConfig.p = 0.4;
+    pitchConfig.p = 0.2;
     pitchConfig.i = 0.0;
-    pitchConfig.d = 0.15;
+    pitchConfig.d = 0.08;
 
-    rollConfig.p = 0.1;
+    rollConfig.p = 0.2;
     rollConfig.i = 0.0;
     rollConfig.d = 0.08;
 
@@ -48,7 +45,7 @@ void Drone::update() {
             rollPID.setSetpoint(0);
             ROS_ERROR("Heartbeat not reset! Be sure to call Drone::sendHeartBeat at least once per second.");
         }
-        ROS_INFO("POSE: Y:%.2f P:%.2f R:%.2f H:%.2f", yaw, pitch, roll, height);
+        ROS_INFO("POSE: Y:%.2f P:%.2f R:%.2f H:%.2f", yaw * 180.0 / M_PI, pitch * 180.0 / M_PI, roll * 180.0 / M_PI, height);
 
         mav_msgs::Actuators output;
         output.angular_velocities.clear();
@@ -207,7 +204,7 @@ void Drone::onImuMessageReceived(const sensor_msgs::Imu::ConstPtr& msg){
 }
 
 void Drone::onPoseReceived(const geometry_msgs::Pose::ConstPtr& msg){
-    height = msg->position.z; //**- 0.05; //0.05 is the height reported by Gazebo when the drone is on the ground
+    height = msg->position.z;
 
 }
 

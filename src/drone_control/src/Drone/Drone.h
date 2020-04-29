@@ -66,7 +66,7 @@ public:
 
     /**
     * Updates heartbeat of program, the drone keeps track of how often it is received, if it does not
-     * receive this message often enough the dron will stop for safety.
+    * receive this message often enough the dron will stop for safety.
     * @return
     */
     void sendHeartBeat();
@@ -103,7 +103,6 @@ public:
 
     /**
      * Retrieve last K value read from drone, this represents the biggest motor output the drone will attempt to use
-     * Range from 0 to 5000
      * @return
      */
     float getK() const;
@@ -134,14 +133,14 @@ public:
 
     /**
      * Attempts to send all manual motor outputs at once
-     * Range from 0 to 5000
+     * Range from 0 to K
      * @return
      */
     void setAllMotorOutput(float output);
 
     /**
      * Attempts to send individual motor outputs to all motors
-     * Range from 0 to 5000
+     * Range from 0 to K
      * @param topRight
      * @param bottomLeft
      * @param topLeft
