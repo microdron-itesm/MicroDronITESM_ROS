@@ -25,7 +25,7 @@ source devel/setup.bash
 ```
 To run the simulation use:
 ```
-roslaunch rotors_gazebo mav.launch mav_name:=iris world_name:=basic paused:=false
+roslaunch rotors_gazebo mav.launch mav_name:=ardrone world_name:=basic paused:=false
 ```
 
 To run the control node open another terminal, source devel/setup.bash and use:
