@@ -14,7 +14,8 @@ catkin_package(
 link_libraries(${catkin_LIBRARIES} ${SFML_LIBRARIES})
 
 include_directories(
-  ${catkin_INCLUDE_DIRS}
+        ${catkin_INCLUDE_DIRS}
+        include/
 )
 
 file(GLOB_RECURSE drone_control_src

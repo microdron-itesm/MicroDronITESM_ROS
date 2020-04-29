@@ -10,14 +10,14 @@
 #include <chrono>
 #include "PropellerDrawable.h"
 #include "ros/ros.h"
-#include "Drone.h"
+#include "Drone/Drone.h"
 
 int main(int argc, char **argv) {
     ros::init(argc, argv, "talker");
 
 
     sf::RenderWindow window(sf::VideoMode(static_cast<unsigned int>(200),
-                                          static_cast<unsigned int>(200)), "EctoSim", sf::Style::Close);
+                                          static_cast<unsigned int>(200)), "Drone Control", sf::Style::Close);
     window.setFramerateLimit(60);
     PropellerDrawable bottomLeftProp;
     PropellerDrawable bottomRightProp;
@@ -31,62 +31,44 @@ int main(int argc, char **argv) {
     topRightProp.setPosition(100,0);
 
     Drone drone;
-
     drone.setK(838);
-    drone.useManualThrust(false);
-    float currentManualThrust = 0.0;
+
+    float heightTarget = 0, yawTarget = 0, pitchTarget = 0, rollTarget = 0;
 
     while (window.isOpen()) {
-        if(sf::Keyboard::isKeyPressed(sf::Keyboard::A)){
-            drone.setTargetRoll(-10 *  M_PI / 180.0 );
-        }else if(sf::Keyboard::isKeyPressed(sf::Keyboard::D)){
-            drone.setTargetRoll(10 *  M_PI / 180.0);
-        }else{
-            drone.setTargetRoll(0);
-        }
+        drone.sendHeartBeat();
 
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::W)){
-            drone.setTargetPitch(-10 *  M_PI / 180.0);
+            pitchTarget = (8 * M_PI / 180.0);
         }else if(sf::Keyboard::isKeyPressed(sf::Keyboard::S)){
-            drone.setTargetPitch(10  *  M_PI / 180.0);
+            pitchTarget = -(8 * M_PI / 180.0);
         }else{
-            drone.setTargetPitch(0);
+            pitchTarget = 0;
+        }
+
+        if(sf::Keyboard::isKeyPressed(sf::Keyboard::A)){
+            rollTarget = -(8 * M_PI / 180.0);
+        }else if(sf::Keyboard::isKeyPressed(sf::Keyboard::D)){
+            rollTarget = (8 * M_PI / 180.0);
+        }else{
+            rollTarget = 0;
         }
 
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::Q)){
-            drone.setTargetYaw(30 *  M_PI / 180.0 );
+            yawTarget = -(45 * M_PI / 180.0); // As we run the GUI at 60fps, change Yaw by a rate of 45 degrees per second
         }else if(sf::Keyboard::isKeyPressed(sf::Keyboard::E)){
-            drone.setTargetYaw(-30 *  M_PI / 180.0);
+            yawTarget = (45 * M_PI / 180.0);
         }else{
-            drone.setTargetYaw(0);
+            yawTarget = 0;
         }
 
-        if(sf::Keyboard::isKeyPressed(sf::Keyboard::R)) {
-            drone.setTargetHeight(1.5);
-            currentManualThrust += .05 * 0.016;
-        }else if(sf::Keyboard::isKeyPressed(sf::Keyboard::F)){
-            drone.setTargetHeight(0.5);
-            currentManualThrust -= .05 * 0.016;
-        }else{
-            drone.setTargetHeight(1.0);
-        }
+        drone.setSetpoints(pitchTarget, rollTarget, yawTarget, 1.0);
 
-        if(currentManualThrust > 1.0){
-            currentManualThrust = 1.0;
-        }
-        if(currentManualThrust < 0.0){
-            currentManualThrust = 0.0;
-        }
-        drone.setManualThrust(currentManualThrust);
-        drone.killMotors(sf::Keyboard::isKeyPressed(sf::Keyboard::K));
+        bottomLeftProp.setCurrentSpeed(drone.getMotorOutputBL());
+        bottomRightProp.setCurrentSpeed(-drone.getMotorOutputBR());
 
-        drone.update();
-
-        bottomLeftProp.setCurrentSpeed(drone.getBottomLeftAngularSpeed());
-        bottomRightProp.setCurrentSpeed(-drone.getBottomRightAngularSpeed());
-
-        topLeftProp.setCurrentSpeed(-drone.getTopLeftAngularSpeed());
-        topRightProp.setCurrentSpeed(drone.getTopRightAngularspeed());
+        topLeftProp.setCurrentSpeed(-drone.getMotorOutputTL());
+        topRightProp.setCurrentSpeed(drone.getMotorOutputTR());
 
         bottomLeftProp.update();
         bottomRightProp.update();
@@ -98,6 +80,7 @@ int main(int argc, char **argv) {
 
 
             if (event.type == sf::Event::Closed) {
+                drone.setAllMotorOutput(0,0,0,0);
                 window.close();
             } else if (event.type == sf::Event::Resized) {
                 window.setView(
@@ -112,9 +95,6 @@ int main(int argc, char **argv) {
         window.draw(topRightProp);
 
         window.display();
-
-        ros::spinOnce();
     }
-
     return 0;
 }

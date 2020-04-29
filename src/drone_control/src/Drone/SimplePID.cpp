@@ -3,6 +3,7 @@
 //
 
 #include "SimplePID.h"
+#include "ros/ros.h"
 
 SimplePID::SimplePID(SimplePIDConfig pidConfig) {
     this->config = pidConfig;
@@ -16,7 +17,7 @@ void SimplePID::setConfig(const SimplePIDConfig &config) {
     if(config.max < config.min && config.clampedOutput){
         throw std::logic_error("Max output is less than min on SimplePIDConfig");
     }
-    SimplePID::config = config;
+    this->config = config;
 }
 
 double SimplePID::getSetpoint() const {
@@ -24,14 +25,14 @@ double SimplePID::getSetpoint() const {
 }
 
 void SimplePID::setSetpoint(double setpoint) {
-    SimplePID::setpoint = setpoint;
+    this->setpoint = setpoint;
 }
 
 double SimplePID::getOutput() const {
     return output;
 }
 
-void SimplePID::update(double source) {
+double SimplePID::update(double source) {
     std::chrono::high_resolution_clock::time_point currentTime = std::chrono::high_resolution_clock ::now();
 
     double timeStep = std::chrono::duration<double>(currentTime - lastTimeUpdate).count();
@@ -42,9 +43,7 @@ void SimplePID::update(double source) {
 
     errorDerivative = (error - lastError) / timeStep;
 
-    output = error * config.p + errorIntegral * config.i + errorDerivative * config.d;
-
-
+    output = error * config.p + errorIntegral * config.i + errorDerivative * config.d + setpoint * config.f + config.feedForward;
 
     if(config.clampedOutput){
         if(std::abs(output) > config.max){
@@ -57,6 +56,8 @@ void SimplePID::update(double source) {
     }
 
     lastError = error;
-    lastTimeUpdate = std::chrono::high_resolution_clock ::now();
+    lastTimeUpdate = std::chrono::high_resolution_clock::now();
+    
+    return output;
 }
 

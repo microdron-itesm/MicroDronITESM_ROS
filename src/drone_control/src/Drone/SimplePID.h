@@ -9,7 +9,7 @@
 #include <cmath>
 
 struct SimplePIDConfig {
-    double p = 0, i = 0, d = 0;
+    double p = 0, i = 0, d = 0, f = 0, feedForward = 0;
     double max = 1, min = 0;
     bool clampedOutput = false;
 };
@@ -28,7 +28,7 @@ public:
 
     double getOutput() const;
 
-    void update(double source);
+    double update(double source);
 
 private:
     double setpoint = 0;
