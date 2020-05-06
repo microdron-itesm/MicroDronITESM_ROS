@@ -55,13 +55,10 @@ int main(int argc, char **argv) {
         }
 
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::Q)){
-            yawTarget = (90 * M_PI / 180.0); // As we run the GUI at 60fps, change Yaw by a rate of 45 degrees per second
+            yawTarget += (30 * M_PI / 180.0) * 0.016; // As we run the GUI at 60fps, change Yaw by a rate of 45 degrees per second
         }else if(sf::Keyboard::isKeyPressed(sf::Keyboard::E)){
-            yawTarget = -(90 * M_PI / 180.0);
-        }else{
-            yawTarget = 0;
+            yawTarget += -(30 * M_PI / 180.0) * 0.016;
         }
-
         drone.setSetpoints(pitchTarget, rollTarget, yawTarget, 1.0);
 
         bottomLeftProp.setCurrentSpeed(drone.getMotorOutputBL());

@@ -17,13 +17,13 @@ Drone::Drone() {
     yawConfig.max = 0.2;
     yawConfig.min = -0.2;
 
-    pitchConfig.p = 0.4;
+    pitchConfig.p = 0.2;
     pitchConfig.i = 0.0;
-    pitchConfig.d = 0.08;
+    pitchConfig.d = 0.06;
 
-    rollConfig.p = 0.4;
+    rollConfig.p = 0.2;
     rollConfig.i = 0.0;
-    rollConfig.d = 0.08;
+    rollConfig.d = 0.06;
 
     heightConfig.p = 1.2;
     heightConfig.i = 0.0;
