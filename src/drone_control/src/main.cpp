@@ -39,25 +39,25 @@ int main(int argc, char **argv) {
         drone.sendHeartBeat();
 
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::W)){
-            pitchTarget = (8 * M_PI / 180.0);
+            pitchTarget = (16 * M_PI / 180.0);
         }else if(sf::Keyboard::isKeyPressed(sf::Keyboard::S)){
-            pitchTarget = -(8 * M_PI / 180.0);
+            pitchTarget = -(16 * M_PI / 180.0);
         }else{
             pitchTarget = 0;
         }
 
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::A)){
-            rollTarget = -(8 * M_PI / 180.0);
+            rollTarget = -(16 * M_PI / 180.0);
         }else if(sf::Keyboard::isKeyPressed(sf::Keyboard::D)){
-            rollTarget = (8 * M_PI / 180.0);
+            rollTarget = (16 * M_PI / 180.0);
         }else{
             rollTarget = 0;
         }
 
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::Q)){
-            yawTarget = (30 * M_PI / 180.0); // As we run the GUI at 60fps, change Yaw by a rate of 45 degrees per second
+            yawTarget = (90 * M_PI / 180.0); // As we run the GUI at 60fps, change Yaw by a rate of 45 degrees per second
         }else if(sf::Keyboard::isKeyPressed(sf::Keyboard::E)){
-            yawTarget = -(30 * M_PI / 180.0);
+            yawTarget = -(90 * M_PI / 180.0);
         }else{
             yawTarget = 0;
         }

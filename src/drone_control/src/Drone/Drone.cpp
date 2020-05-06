@@ -13,16 +13,19 @@ Drone::Drone() {
     yawConfig.p = 0.7;
     yawConfig.i = 0.0;
     yawConfig.d = 0.8;
+    yawConfig.clampedOutput = true;
+    yawConfig.max = 0.2;
+    yawConfig.min = -0.2;
 
-    pitchConfig.p = 0.2;
+    pitchConfig.p = 0.4;
     pitchConfig.i = 0.0;
     pitchConfig.d = 0.08;
 
-    rollConfig.p = 0.2;
+    rollConfig.p = 0.4;
     rollConfig.i = 0.0;
     rollConfig.d = 0.08;
 
-    heightConfig.p = 1.4;
+    heightConfig.p = 1.2;
     heightConfig.i = 0.0;
     heightConfig.d = 0.8;
     heightConfig.feedForward = 0.788;
@@ -198,9 +201,23 @@ float Drone::getHeartbeatTime() const{
 }
 
 void Drone::onImuMessageReceived(const sensor_msgs::Imu::ConstPtr& msg){
-    yaw = msg->orientation.z;
-    pitch = msg->orientation.y;
-    roll = msg->orientation.x;
+    auto q = msg->orientation;
+    // roll (x-axis rotation)
+    double sinr_cosp = 2 * (q.w * q.x + q.y * q.z);
+    double cosr_cosp = 1 - 2 * (q.x * q.x + q.y * q.y);
+    roll = std::atan2(sinr_cosp, cosr_cosp);
+
+    // pitch (y-axis rotation)
+    double sinp = 2 * (q.w * q.y - q.z * q.x);
+    if (std::abs(sinp) >= 1)
+        pitch = std::copysign(M_PI / 2, sinp); // use 90 degrees if out of range
+    else
+        pitch = std::asin(sinp);
+
+    // yaw (z-axis rotation)
+    double siny_cosp = 2 * (q.w * q.z + q.x * q.y);
+    double cosy_cosp = 1 - 2 * (q.y * q.y + q.z * q.z);
+    yaw = std::atan2(siny_cosp, cosy_cosp);
 }
 
 void Drone::onPoseReceived(const geometry_msgs::Pose::ConstPtr& msg){

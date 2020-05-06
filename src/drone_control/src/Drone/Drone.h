@@ -196,8 +196,8 @@ private:
     ros::Publisher angularVelocityPub;
     ros::Subscriber imuSub, poseSub;
     SimplePID pitchPID, rollPID, yawPID, heightPID;
-    float pitch = 0.0, roll = 0.0, yaw = 0.0, height = 0.0, heartbeatTime = 0.0;
-    float k = 0.0;
+    double pitch = 0.0, roll = 0.0, yaw = 0.0, height = 0.0, heartbeatTime = 0.0;
+    double k = 0.0;
     bool manualOutput = false;
     std::vector<double> motorOutputs {0.0, 0.0, 0.0, 0.0};
     std::chrono::high_resolution_clock::time_point lastHeartbeatTime = std::chrono::high_resolution_clock::now();
