@@ -24,7 +24,7 @@ def parseIMUData(data):
         	yaw = float(pose[0])
         	roll =float(pose[2])
         	pitch = float(pose[1])
-        	z = 1.0 #float(pose[3])
+        	z = float(pose[3])
 
 
         	cy = math.cos(yaw * 0.5)
