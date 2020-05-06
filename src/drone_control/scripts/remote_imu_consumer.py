@@ -22,7 +22,7 @@ def parseIMUData(data):
 
 	if len(pose) == 4:
         	yaw = float(pose[0])
-        	roll =float(pose[2])
+        	roll = float(pose[2])
         	pitch = float(pose[1])
         	z = float(pose[3])
 
