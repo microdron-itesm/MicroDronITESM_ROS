@@ -9,29 +9,29 @@ from gazebo_msgs.srv import SetModelState
 
 def parseIMUData(data):
 
-	clean = data[2:len(data) - 5]
+	clean = data[3:len(data) - 5]
 
-	pose = clean.split(",")
+	pose = clean.split(" ")
 
         res = { "qw": 0.0, "qx": 0.0, "qy": 0.0, "qz": 0.0, "z": 0.0}
 
 
 	if len(pose) == 4:
 		print pose
-        	yaw = float(pose[0]) * math.pi / 180.0
+        	yaw = float(pose[0]) #* math.pi / 180.0
         	roll = float(pose[2])
-		roll += 180.0
+		#roll += 180.0
 
-		if roll > 180:
-			roll -= 360
+		#if roll > 180:
+		#	roll -= 360
 
-		if roll < -180:
-			roll += 360
+		#if roll < -180:
+		#	roll += 360
 
-		roll *= math.pi / 180.0
+		#roll *= math.pi / 180.0
 
 
-        	pitch = float(pose[1])  * math.pi / 180.0
+        	pitch = float(pose[1]) #* math.pi / 180.0
         	z = float(pose[3]) / 1000.0
 
 
