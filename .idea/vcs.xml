@@ -3,6 +3,7 @@
   <component name="VcsDirectoryMappings">
     <mapping directory="$PROJECT_DIR$" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/src/drone_control/src/drone_control" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/src/itesm_simulator/mavlink_imu_interface/libs/mavlink2" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/src/mav_comm" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/src/octomap_msgs" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/src/octomap_ros" vcs="Git" />
