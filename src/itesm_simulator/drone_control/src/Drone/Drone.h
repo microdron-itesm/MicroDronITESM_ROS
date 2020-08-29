@@ -183,11 +183,10 @@ public:
      */
     float getHeartbeatTime() const;
 
-
+    void update();
     ~Drone();
 
 private:
-    void update();
 
     void onImuMessageReceived(const sensor_msgs::Imu::ConstPtr& msg);
     void onPoseReceived(const geometry_msgs::Pose::ConstPtr& msg);
@@ -201,9 +200,6 @@ private:
     bool manualOutput = false;
     std::vector<double> motorOutputs {0.0, 0.0, 0.0, 0.0};
     std::chrono::high_resolution_clock::time_point lastHeartbeatTime = std::chrono::high_resolution_clock::now();
-
-    std::thread updateThread;
-    bool running = true;
 };
 
 #endif //CONTROLTESTS_DRONEDRAWABLE_H

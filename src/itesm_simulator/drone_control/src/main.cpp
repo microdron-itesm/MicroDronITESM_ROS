@@ -12,6 +12,40 @@
 #include "ros/ros.h"
 #include "Drone/Drone.h"
 
+
+void keyboardControls(float &pitchTarget, float &rollTarget, float &yawTarget, float dt){
+        if(sf::Keyboard::isKeyPressed(sf::Keyboard::W)){
+            pitchTarget = (16 * M_PI / 180.0);
+        }else if(sf::Keyboard::isKeyPressed(sf::Keyboard::S)){
+            pitchTarget = -(16 * M_PI / 180.0);
+        }else{
+            pitchTarget = 0;
+        }
+
+        if(sf::Keyboard::isKeyPressed(sf::Keyboard::A)){
+            rollTarget = -(16 * M_PI / 180.0);
+        }else if(sf::Keyboard::isKeyPressed(sf::Keyboard::D)){
+            rollTarget = (16 * M_PI / 180.0);
+        }else{
+            rollTarget = 0;
+        }
+
+        if(sf::Keyboard::isKeyPressed(sf::Keyboard::Q)){
+            yawTarget += (float) (30.0f * M_PI / 180.0f) * dt;
+        }else if(sf::Keyboard::isKeyPressed(sf::Keyboard::E)){
+            yawTarget += (float) -(30.0f * M_PI / 180.0f) * dt;
+        }
+}
+
+void joystickControl(float &pitchTarget, float &rollTarget, float &yawTarget, float dt){
+    float maxAngle = 16 * M_PI / 180.0;
+    float maxYawRate = 30 * M_PI / 180.0;
+
+    pitchTarget = (float) (-sf::Joystick::getAxisPosition(0, sf::Joystick::Y) / 100.0) * maxAngle;
+    rollTarget = (float) (sf::Joystick::getAxisPosition(0, sf::Joystick::X) / 100.0) * maxAngle;
+    yawTarget += (float) (- sf::Joystick::getAxisPosition(0, sf::Joystick::U) / 100.0) * maxYawRate * dt;
+}
+
 int main(int argc, char **argv) {
     ros::init(argc, argv, "talker");
 
@@ -37,27 +71,10 @@ int main(int argc, char **argv) {
 
     while (window.isOpen()) {
         drone.sendHeartBeat();
-
-        if(sf::Keyboard::isKeyPressed(sf::Keyboard::W)){
-            pitchTarget = (16 * M_PI / 180.0);
-        }else if(sf::Keyboard::isKeyPressed(sf::Keyboard::S)){
-            pitchTarget = -(16 * M_PI / 180.0);
+        if(sf::Joystick::isConnected(0)){
+            joystickControl(pitchTarget, rollTarget, yawTarget, 0.016);
         }else{
-            pitchTarget = 0;
-        }
-
-        if(sf::Keyboard::isKeyPressed(sf::Keyboard::A)){
-            rollTarget = -(16 * M_PI / 180.0);
-        }else if(sf::Keyboard::isKeyPressed(sf::Keyboard::D)){
-            rollTarget = (16 * M_PI / 180.0);
-        }else{
-            rollTarget = 0;
-        }
-
-        if(sf::Keyboard::isKeyPressed(sf::Keyboard::Q)){
-            yawTarget += (30 * M_PI / 180.0) * 0.016; // As we run the GUI at 60fps, change Yaw by a rate of 45 degrees per second
-        }else if(sf::Keyboard::isKeyPressed(sf::Keyboard::E)){
-            yawTarget += -(30 * M_PI / 180.0) * 0.016;
+            keyboardControls(pitchTarget, rollTarget, yawTarget, 0.016);
         }
         drone.setSetpoints(pitchTarget, rollTarget, yawTarget, 1.0);
 
@@ -92,6 +109,8 @@ int main(int argc, char **argv) {
         window.draw(topRightProp);
 
         window.display();
+        drone.update();
+        ros::spinOnce();
     }
     return 0;
 }

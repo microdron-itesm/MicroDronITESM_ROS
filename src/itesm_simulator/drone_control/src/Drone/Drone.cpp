@@ -34,58 +34,50 @@ Drone::Drone() {
     pitchPID.setConfig(pitchConfig);
     rollPID.setConfig(rollConfig);
     heightPID.setConfig(heightConfig);
-    updateThread = std::thread(&Drone::update, this);
 }
 
 void Drone::update() {
-    while(running){
-        auto currentTime = std::chrono::high_resolution_clock::now();
-        heartbeatTime = std::chrono::duration<double>(currentTime - lastHeartbeatTime).count();
+    auto currentTime = std::chrono::high_resolution_clock::now();
+    heartbeatTime = std::chrono::duration<double>(currentTime - lastHeartbeatTime).count();
 
-        if(heartbeatTime > 1){
-            yawPID.setSetpoint(0);
-            pitchPID.setSetpoint(0);
-            rollPID.setSetpoint(0);
-            ROS_ERROR("Heartbeat not reset! Be sure to call Drone::sendHeartBeat at least once per second.");
-        }
-        ROS_INFO("POSE: Y:%.2f P:%.2f R:%.2f H:%.2f", yaw * 180.0 / M_PI, pitch * 180.0 / M_PI, roll * 180.0 / M_PI, height);
-
-        mav_msgs::Actuators output;
-        output.angular_velocities.clear();
-
-        if(!manualOutput){
-            double yawRate = yawPID.update(yaw);
-            double pitchRate = pitchPID.update(pitch);
-            double rollRate = rollPID.update(roll);
-            double thrust = heightPID.update(height);
-            //ROS_INFO("PID OUTS: Y:%.2f P:%.2f R:%.2f T:%.2f", yawRate, pitchRate, rollRate, thrust);
-
-            motorOutputs[0] = (thrust - pitchRate - rollRate - yawRate) * k;
-            motorOutputs[1] = (thrust + pitchRate + rollRate - yawRate) * k;
-            motorOutputs[2] = (thrust - pitchRate + rollRate + yawRate) * k;
-            motorOutputs[3] = (thrust + pitchRate - rollRate + yawRate) * k;
-
-
-            motorOutputs[0] = motorOutputs[0] < 0 ? 0 : motorOutputs[0];
-            motorOutputs[1] = motorOutputs[1] < 0 ? 0 : motorOutputs[1];
-            motorOutputs[2] = motorOutputs[2] < 0 ? 0 : motorOutputs[2];
-            motorOutputs[3] = motorOutputs[3] < 0 ? 0 : motorOutputs[3];
-        }
-
-        double topRightAngularSpeed = motorOutputs[0];
-        double bottomLeftAngularSpeed = motorOutputs[1];
-        double topLeftAngularSpeed = motorOutputs[2];
-        double bottomRightAngularSpeed = motorOutputs[3];
-
-        output.angular_velocities.emplace_back(topRightAngularSpeed);
-        output.angular_velocities.emplace_back(bottomLeftAngularSpeed);
-        output.angular_velocities.emplace_back(topLeftAngularSpeed);
-        output.angular_velocities.emplace_back(bottomRightAngularSpeed);
-        angularVelocityPub.publish(output);
-        ros::spinOnce();
-        std::this_thread::sleep_for(std::chrono::milliseconds(16));
+    if(heartbeatTime > 1){
+        yawPID.setSetpoint(0);
+        pitchPID.setSetpoint(0);
+        rollPID.setSetpoint(0);
+        ROS_ERROR("Heartbeat not reset! Be sure to call Drone::sendHeartBeat at least once per second.");
     }
-    
+
+    mav_msgs::Actuators output;
+    output.angular_velocities.clear();
+
+    if(!manualOutput){
+        double yawRate = yawPID.update(yaw);
+        double pitchRate = pitchPID.update(pitch);
+        double rollRate = rollPID.update(roll);
+        double thrust = heightPID.update(height);
+
+        motorOutputs[0] = (thrust - pitchRate - rollRate - yawRate) * k;
+        motorOutputs[1] = (thrust + pitchRate + rollRate - yawRate) * k;
+        motorOutputs[2] = (thrust - pitchRate + rollRate + yawRate) * k;
+        motorOutputs[3] = (thrust + pitchRate - rollRate + yawRate) * k;
+
+
+        motorOutputs[0] = motorOutputs[0] < 0 ? 0 : motorOutputs[0];
+        motorOutputs[1] = motorOutputs[1] < 0 ? 0 : motorOutputs[1];
+        motorOutputs[2] = motorOutputs[2] < 0 ? 0 : motorOutputs[2];
+        motorOutputs[3] = motorOutputs[3] < 0 ? 0 : motorOutputs[3];
+    }
+
+    double topRightAngularSpeed = motorOutputs[0];
+    double bottomLeftAngularSpeed = motorOutputs[1];
+    double topLeftAngularSpeed = motorOutputs[2];
+    double bottomRightAngularSpeed = motorOutputs[3];
+
+    output.angular_velocities.emplace_back(topRightAngularSpeed);
+    output.angular_velocities.emplace_back(bottomLeftAngularSpeed);
+    output.angular_velocities.emplace_back(topLeftAngularSpeed);
+    output.angular_velocities.emplace_back(bottomRightAngularSpeed);
+    angularVelocityPub.publish(output);
 }
 
 const SimplePID &Drone::getPitchPID() const{
@@ -226,8 +218,6 @@ void Drone::onPoseReceived(const geometry_msgs::Pose::ConstPtr& msg){
 }
 
 Drone::~Drone(){
-    running = false;
-    updateThread.join();
     mav_msgs::Actuators output;
     output.angular_velocities.clear();
 
