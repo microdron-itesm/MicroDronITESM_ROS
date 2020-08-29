@@ -1,8 +1,0 @@
-prefix=/usr/local
-
-Name: octomap_ros
-Description: Description of octomap_ros
-Version: 0.4.0
-Cflags: -I${prefix}/include -I/opt/ros/noetic/include
-Libs: -L${prefix}/lib -loctomap_ros /opt/ros/noetic/lib/liboctomap.so /opt/ros/noetic/lib/liboctomath.so
-Requires: sensor_msgs tf octomap_msgs
