@@ -10,9 +10,6 @@
 [submodule "src/octomap_ros"]
 	path = src/octomap_ros
 	url = https://github.com/OctoMap/octomap_ros.git
-[submodule "src/rotors_simulator"]
-	path = src/rotors_simulator
-	url = https://github.com/ethz-asl/rotors_simulator.git
 [submodule "src/itesm_simulator/mavlink_imu_interface/libs/mavlink2"]
 	path = src/itesm_simulator/mavlink_imu_interface/libs/mavlink2
 	url = https://github.com/mavlink/c_library_v2
