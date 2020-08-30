@@ -6,8 +6,8 @@
 
 Drone::Drone() {
     angularVelocityPub = nodeHandle.advertise<mav_msgs::Actuators>("/ardrone/command/motor_speed", 1000);
-    imuSub = nodeHandle.subscribe("/ardrone/ground_truth/imu", 1000, &Drone::onImuMessageReceived , this);
-    poseSub = nodeHandle.subscribe("/ardrone/ground_truth/pose", 1000, &Drone::onPoseReceived, this);
+    imuSub = nodeHandle.subscribe("/ardrone/imu", 1000, &Drone::onImuMessageReceived , this);
+    irSub = nodeHandle.subscribe("/ardrone/ir", 1000, &Drone::onIRReceived, this);
     SimplePIDConfig yawConfig, pitchConfig, rollConfig, heightConfig;
 
     yawConfig.p = 0.7;
@@ -27,7 +27,7 @@ Drone::Drone() {
 
     heightConfig.p = 1.2;
     heightConfig.i = 0.0;
-    heightConfig.d = 0.8;
+    heightConfig.d = 0.5;
     heightConfig.feedForward = 0.788;
 
     yawPID.setConfig(yawConfig);
@@ -212,9 +212,8 @@ void Drone::onImuMessageReceived(const sensor_msgs::Imu::ConstPtr& msg){
     yaw = std::atan2(siny_cosp, cosy_cosp);
 }
 
-void Drone::onPoseReceived(const geometry_msgs::Pose::ConstPtr& msg){
-    height = msg->position.z;
-
+void Drone::onIRReceived(const sensor_msgs::Range::ConstPtr& msg){
+    height = msg->range * (std::cos(roll) * std::cos(pitch));
 }
 
 Drone::~Drone(){

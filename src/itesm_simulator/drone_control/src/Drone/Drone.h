@@ -8,6 +8,7 @@
 #include "Actuators.h"
 #include "SimplePID.h"
 #include "sensor_msgs/Imu.h"
+#include "sensor_msgs/Range.h"
 #include "geometry_msgs/Pose.h"
 #include <vector>
 #include <thread>
@@ -189,11 +190,11 @@ public:
 private:
 
     void onImuMessageReceived(const sensor_msgs::Imu::ConstPtr& msg);
-    void onPoseReceived(const geometry_msgs::Pose::ConstPtr& msg);
+    void onIRReceived(const sensor_msgs::Range::ConstPtr& msg);
 
     ros::NodeHandle nodeHandle;
     ros::Publisher angularVelocityPub;
-    ros::Subscriber imuSub, poseSub;
+    ros::Subscriber imuSub, irSub;
     SimplePID pitchPID, rollPID, yawPID, heightPID;
     double pitch = 0.0, roll = 0.0, yaw = 0.0, height = 0.0, heartbeatTime = 0.0;
     double k = 0.0;
