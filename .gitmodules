@@ -16,3 +16,6 @@
 [submodule "src/rotors_simulator"]
 	path = src/rotors_simulator
 	url = https://github.com/microdron-itesm/rotors_simulator
+[submodule "src/itesm_simulator/mavlink_imu_interface/libs/UDPLib"]
+	path = src/itesm_simulator/mavlink_imu_interface/libs/UDPLib
+	url = https://github.com/microdron-itesm/UDPLib.git

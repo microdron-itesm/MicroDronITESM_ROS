@@ -119,6 +119,7 @@ include_directories(
 # include
   ${catkin_INCLUDE_DIRS}
   libs
+  libs/UDPLib/include
 )
 
 ## Declare a C++ library
@@ -133,6 +134,7 @@ include_directories(
 file(GLOB_RECURSE SRC
  "src/*.cpp"
  "libs/*.c"
+ "UDPLib/src/*.c"
 )
 
 ## Declare a C++ executable
