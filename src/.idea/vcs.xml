@@ -2,7 +2,8 @@
 <project version="4">
   <component name="VcsDirectoryMappings">
     <mapping directory="$PROJECT_DIR$/.." vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/itesm_simulator/mavlink_imu_interface/libs/mavlink2" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/itesm_simulator/mavlink_interface/libs/UDPLib" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/itesm_simulator/mavlink_interface/libs/mavlink2" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/mav_comm" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/octomap_msgs" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/octomap_ros" vcs="Git" />
