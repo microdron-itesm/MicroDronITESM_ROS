@@ -57,7 +57,7 @@ int main(int argc, char **argv){
         udp_conn_send(&data, send_buf, send_len);
 
         ros::spinOnce();
-        std::this_thread::sleep_for(std::chrono::milliseconds(50));
+        std::this_thread::sleep_for(std::chrono::milliseconds(1));
     }
     if (receive_thread.joinable()){
         receive_thread.join();
@@ -103,7 +103,7 @@ void receiveThread(udp_conn_data* data,  ros::NodeHandle *nodeHandle, const std:
                 }
             }
         }
-        std::this_thread::sleep_for(std::chrono::milliseconds(5));
+        std::this_thread::sleep_for(std::chrono::milliseconds(1));
     }
 
 }
