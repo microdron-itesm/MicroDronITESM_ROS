@@ -2,205 +2,205 @@
 <project version="4">
   <component name="CMakeRunConfigurationManager" shouldGenerate="true" shouldDeleteObsolete="true">
     <generated>
-      <config projectName="Project" targetName="visualization_msgs_generate_messages_nodejs" />
-      <config projectName="Project" targetName="bond_generate_messages_nodejs" />
-      <config projectName="Project" targetName="rotors_comm_generate_messages_nodejs" />
-      <config projectName="Project" targetName="nav_msgs_generate_messages_py" />
-      <config projectName="Project" targetName="roscpp_generate_messages_py" />
-      <config projectName="Project" targetName="sdf" />
-      <config projectName="Project" targetName="_mav_planning_msgs_generate_messages_check_deps_PolygonService" />
-      <config projectName="Project" targetName="clean_test_results" />
-      <config projectName="Project" targetName="rotors_comm_genlisp" />
-      <config projectName="Project" targetName="octomap_msgs_generate_messages_eus" />
-      <config projectName="Project" targetName="geometry_msgs_generate_messages_cpp" />
-      <config projectName="Project" targetName="octomap_msgs_generate_messages_lisp" />
-      <config projectName="Project" targetName="rosgraph_msgs_generate_messages_cpp" />
-      <config projectName="Project" targetName="rotors_gazebo_magnetometer_plugin" />
-      <config projectName="Project" targetName="hovering_example" />
-      <config projectName="Project" targetName="geometry_msgs_generate_messages_lisp" />
-      <config projectName="Project" targetName="rosgraph_msgs_generate_messages_py" />
-      <config projectName="Project" targetName="bond_generate_messages_py" />
-      <config projectName="Project" targetName="mav_msgs_generate_messages_cpp" />
-      <config projectName="Project" targetName="dynamic_reconfigure_gencfg" />
-      <config projectName="Project" targetName="topic_tools_generate_messages_eus" />
-      <config projectName="Project" targetName="_octomap_msgs_generate_messages_check_deps_BoundingBoxQuery" />
-      <config projectName="Project" targetName="trajectory_msgs_generate_messages_lisp" />
-      <config projectName="Project" targetName="_catkin_empty_exported_target" />
-      <config projectName="Project" targetName="octomap_msgs_generate_messages_cpp" />
-      <config projectName="Project" targetName="mav_msgs_genpy" />
-      <config projectName="Project" targetName="tf2_msgs_generate_messages_nodejs" />
-      <config projectName="Project" targetName="actionlib_generate_messages_py" />
-      <config projectName="Project" targetName="rosgraph_msgs_generate_messages_eus" />
-      <config projectName="Project" targetName="roscpp_generate_messages_nodejs" />
-      <config projectName="Project" targetName="mav_msgs_generate_messages_lisp" />
-      <config projectName="Project" targetName="_octomap_msgs_generate_messages_check_deps_Octomap" />
-      <config projectName="Project" targetName="lee_position_controller_node" />
-      <config projectName="Project" targetName="mav_msgs_genlisp" />
-      <config projectName="Project" targetName="mav_planning_msgs_gennodejs" />
-      <config projectName="Project" targetName="std_srvs_generate_messages_cpp" />
-      <config projectName="Project" targetName="_mav_msgs_generate_messages_check_deps_RollPitchYawrateThrust" />
-      <config projectName="Project" targetName="bond_generate_messages_cpp" />
-      <config projectName="Project" targetName="drone_control_node" />
-      <config projectName="Project" targetName="_mav_msgs_generate_messages_check_deps_Status" />
-      <config projectName="Project" targetName="mav_msgs_gennodejs" />
-      <config projectName="Project" targetName="rotors_comm_generate_messages" />
-      <config projectName="Project" targetName="lee_position_controller" />
-      <config projectName="Project" targetName="gmock_main" />
-      <config projectName="Project" targetName="tf2_msgs_generate_messages_py" />
-      <config projectName="Project" targetName="_mav_planning_msgs_generate_messages_check_deps_PolynomialSegment4D" />
-      <config projectName="Project" targetName="rotors_gazebo_motor_model" />
-      <config projectName="Project" targetName="std_srvs_generate_messages_eus" />
-      <config projectName="Project" targetName="rotors_gazebo_fw_dynamics_plugin" />
-      <config projectName="Project" targetName="mav_planning_msgs_genpy" />
-      <config projectName="Project" targetName="rotors_gazebo_bag_plugin" />
-      <config projectName="Project" targetName="tf_generate_messages_eus" />
-      <config projectName="Project" targetName="topic_tools_generate_messages_nodejs" />
-      <config projectName="Project" targetName="nav_msgs_generate_messages_lisp" />
-      <config projectName="Project" targetName="rotors_gazebo_multirotor_base_plugin" />
-      <config projectName="Project" targetName="mav_planning_msgs_generate_messages" />
-      <config projectName="Project" targetName="std_msgs_generate_messages_nodejs" />
-      <config projectName="Project" targetName="sensor_msgs_generate_messages_py" />
-      <config projectName="Project" targetName="std_srvs_generate_messages_nodejs" />
-      <config projectName="Project" targetName="rotors_comm_generate_messages_lisp" />
-      <config projectName="Project" targetName="tf_generate_messages_cpp" />
-      <config projectName="Project" targetName="gazebo_msgs_generate_messages_lisp" />
+      <config projectName="Project" targetName="_mav_planning_msgs_generate_messages_check_deps_Point2D" />
+      <config projectName="Project" targetName="octomap_msgs_gencpp" />
       <config projectName="Project" targetName="gmock" />
-      <config projectName="Project" targetName="roscpp_generate_messages_eus" />
-      <config projectName="Project" targetName="bond_generate_messages_eus" />
-      <config projectName="Project" targetName="tests" />
-      <config projectName="Project" targetName="octomap_msgs_generate_messages_py" />
-      <config projectName="Project" targetName="mavlink_interface_node" />
-      <config projectName="Project" targetName="_mav_msgs_generate_messages_check_deps_TorqueThrust" />
-      <config projectName="Project" targetName="bond_generate_messages_lisp" />
-      <config projectName="Project" targetName="_rotors_comm_generate_messages_check_deps_Octomap" />
-      <config projectName="Project" targetName="mav_msgs_generate_messages_eus" />
+      <config projectName="Project" targetName="rotors_comm_generate_messages_py" />
+      <config projectName="Project" targetName="nodelet_generate_messages_py" />
       <config projectName="Project" targetName="roscpp_generate_messages_cpp" />
+      <config projectName="Project" targetName="actionlib_generate_messages_eus" />
+      <config projectName="Project" targetName="gtest_main" />
+      <config projectName="Project" targetName="mav_msgs_genpy" />
+      <config projectName="Project" targetName="nav_msgs_generate_messages_eus" />
+      <config projectName="Project" targetName="_mav_planning_msgs_generate_messages_check_deps_PointCloudWithPose" />
+      <config projectName="Project" targetName="mav_msgs_gencpp" />
+      <config projectName="Project" targetName="std_srvs_generate_messages_py" />
+      <config projectName="Project" targetName="roll_pitch_yawrate_thrust_controller" />
+      <config projectName="Project" targetName="actionlib_generate_messages_nodejs" />
+      <config projectName="Project" targetName="rotors_gazebo_noisydepth_plugin" />
+      <config projectName="Project" targetName="tf_generate_messages_eus" />
+      <config projectName="Project" targetName="rosgraph_msgs_generate_messages_nodejs" />
+      <config projectName="Project" targetName="nodelet_generate_messages_nodejs" />
+      <config projectName="Project" targetName="_mav_planning_msgs_generate_messages_check_deps_Polygon2D" />
+      <config projectName="Project" targetName="doxygen" />
+      <config projectName="Project" targetName="octomap_msgs_generate_messages_lisp" />
+      <config projectName="Project" targetName="roscpp_generate_messages_lisp" />
       <config projectName="Project" targetName="nodelet_generate_messages_eus" />
       <config projectName="Project" targetName="gazebo_geotagged_images_plugin" />
-      <config projectName="Project" targetName="topic_tools_generate_messages_cpp" />
-      <config projectName="Project" targetName="gazebo_msgs_generate_messages_cpp" />
-      <config projectName="Project" targetName="mav_msgs" />
-      <config projectName="Project" targetName="LiftDragPlugin" />
-      <config projectName="Project" targetName="roll_pitch_yawrate_thrust_controller" />
-      <config projectName="Project" targetName="rotors_joy_interface" />
-      <config projectName="Project" targetName="std_srvs_generate_messages_lisp" />
-      <config projectName="Project" targetName="gazebo_msgs_generate_messages_nodejs" />
-      <config projectName="Project" targetName="tf_generate_messages_lisp" />
-      <config projectName="Project" targetName="_mav_msgs_generate_messages_check_deps_RateThrust" />
-      <config projectName="Project" targetName="_octomap_msgs_generate_messages_check_deps_OctomapWithPose" />
-      <config projectName="Project" targetName="gazebo_msgs_generate_messages_eus" />
-      <config projectName="Project" targetName="roscpp_generate_messages_lisp" />
-      <config projectName="Project" targetName="mav_msgs_gencpp" />
-      <config projectName="Project" targetName="visualization_msgs_generate_messages_lisp" />
-      <config projectName="Project" targetName="geometry_msgs_generate_messages_eus" />
-      <config projectName="Project" targetName="tf_generate_messages_py" />
-      <config projectName="Project" targetName="rotors_gazebo_odometry_plugin" />
-      <config projectName="Project" targetName="octomap_msgs_generate_messages" />
-      <config projectName="Project" targetName="trajectory_msgs_generate_messages_cpp" />
-      <config projectName="Project" targetName="_mav_planning_msgs_generate_messages_check_deps_Point2D" />
-      <config projectName="Project" targetName="octomap_ros" />
-      <config projectName="Project" targetName="mav_msgs_generate_messages" />
-      <config projectName="Project" targetName="tf2_msgs_generate_messages_cpp" />
-      <config projectName="Project" targetName="actionlib_generate_messages_nodejs" />
-      <config projectName="Project" targetName="rotors_gazebo_ros_interface_plugin" />
-      <config projectName="Project" targetName="rotors_gazebo_gps_plugin" />
-      <config projectName="Project" targetName="visualization_msgs_generate_messages_cpp" />
-      <config projectName="Project" targetName="nav_msgs_generate_messages_cpp" />
-      <config projectName="Project" targetName="mav_msgs_geneus" />
-      <config projectName="Project" targetName="_mav_msgs_generate_messages_check_deps_GpsWaypoint" />
-      <config projectName="Project" targetName="rotors_comm_genpy" />
-      <config projectName="Project" targetName="octomap_msgs_generate_messages_nodejs" />
-      <config projectName="Project" targetName="mav_planning_msgs_generate_messages_nodejs" />
-      <config projectName="Project" targetName="_mav_planning_msgs_generate_messages_check_deps_PolygonWithHolesStamped" />
-      <config projectName="Project" targetName="actionlib_msgs_generate_messages_eus" />
-      <config projectName="Project" targetName="rotors_gazebo_controller_interface" />
-      <config projectName="Project" targetName="tf2_msgs_generate_messages_eus" />
-      <config projectName="Project" targetName="nodelet_generate_messages_cpp" />
-      <config projectName="Project" targetName="_mav_msgs_generate_messages_check_deps_Actuators" />
-      <config projectName="Project" targetName="nav_msgs_generate_messages_eus" />
-      <config projectName="Project" targetName="actionlib_msgs_generate_messages_lisp" />
-      <config projectName="Project" targetName="gazebo_msgs_generate_messages_py" />
-      <config projectName="Project" targetName="octomap_msgs_gencpp" />
-      <config projectName="Project" targetName="rosgraph_msgs_generate_messages_nodejs" />
-      <config projectName="Project" targetName="actionlib_generate_messages_eus" />
-      <config projectName="Project" targetName="download_extra_data" />
-      <config projectName="Project" targetName="_octomap_msgs_generate_messages_check_deps_GetOctomap" />
-      <config projectName="Project" targetName="geometry_msgs_generate_messages_py" />
-      <config projectName="Project" targetName="geometry_msgs_generate_messages_nodejs" />
-      <config projectName="Project" targetName="actionlib_msgs_generate_messages_cpp" />
-      <config projectName="Project" targetName="actionlib_generate_messages_lisp" />
-      <config projectName="Project" targetName="actionlib_msgs_generate_messages_py" />
-      <config projectName="Project" targetName="sensor_msgs_generate_messages_eus" />
-      <config projectName="Project" targetName="rotors_gazebo_noisydepth_plugin" />
-      <config projectName="Project" targetName="std_msgs_generate_messages_lisp" />
-      <config projectName="Project" targetName="octomap_msgs_gennodejs" />
-      <config projectName="Project" targetName="dynamic_reconfigure_generate_messages_py" />
-      <config projectName="Project" targetName="topic_tools_generate_messages_py" />
-      <config projectName="Project" targetName="octomap_msgs_geneus" />
-      <config projectName="Project" targetName="actionlib_generate_messages_cpp" />
-      <config projectName="Project" targetName="rotors_comm_geneus" />
-      <config projectName="Project" targetName="rotors_gazebo_pressure_plugin" />
-      <config projectName="Project" targetName="trajectory_msgs_generate_messages_eus" />
-      <config projectName="Project" targetName="gtest_main" />
-      <config projectName="Project" targetName="_mav_planning_msgs_generate_messages_check_deps_Polygon2D" />
-      <config projectName="Project" targetName="sensor_msgs_generate_messages_cpp" />
-      <config projectName="Project" targetName="mav_msgs_generate_messages_py" />
-      <config projectName="Project" targetName="mav_planning_msgs_generate_messages_lisp" />
+      <config projectName="Project" targetName="bond_generate_messages_nodejs" />
+      <config projectName="Project" targetName="octomap_msgs_generate_messages_cpp" />
+      <config projectName="Project" targetName="rotors_comm_genlisp" />
       <config projectName="Project" targetName="rotors_comm_gencpp" />
-      <config projectName="Project" targetName="visualization_msgs_generate_messages_py" />
-      <config projectName="Project" targetName="tf_generate_messages_nodejs" />
-      <config projectName="Project" targetName="mav_planning_msgs_geneus" />
-      <config projectName="Project" targetName="rotors_gazebo_imu_plugin" />
-      <config projectName="Project" targetName="dynamic_reconfigure_generate_messages_nodejs" />
-      <config projectName="Project" targetName="rotors_gazebo_lidar_plugin" />
-      <config projectName="Project" targetName="_mav_planning_msgs_generate_messages_check_deps_PlannerService" />
-      <config projectName="Project" targetName="mav_planning_msgs_generate_messages_cpp" />
-      <config projectName="Project" targetName="sensor_msgs_generate_messages_nodejs" />
-      <config projectName="Project" targetName="std_msgs_generate_messages_cpp" />
-      <config projectName="Project" targetName="rotors_comm_generate_messages_cpp" />
-      <config projectName="Project" targetName="gtest" />
-      <config projectName="Project" targetName="rosgraph_msgs_generate_messages_lisp" />
-      <config projectName="Project" targetName="std_msgs_generate_messages_py" />
-      <config projectName="Project" targetName="_rotors_comm_generate_messages_check_deps_RecordRosbag" />
-      <config projectName="Project" targetName="_mav_msgs_generate_messages_check_deps_FilteredSensorData" />
-      <config projectName="Project" targetName="trajectory_msgs_generate_messages_py" />
-      <config projectName="Project" targetName="doxygen" />
-      <config projectName="Project" targetName="dynamic_reconfigure_generate_messages_lisp" />
-      <config projectName="Project" targetName="std_msgs_generate_messages_eus" />
-      <config projectName="Project" targetName="waypoint_publisher" />
-      <config projectName="Project" targetName="rotors_comm_generate_messages_py" />
-      <config projectName="Project" targetName="std_srvs_generate_messages_py" />
-      <config projectName="Project" targetName="octomap_msgs_genlisp" />
-      <config projectName="Project" targetName="mav_planning_msgs_genlisp" />
-      <config projectName="Project" targetName="roll_pitch_yawrate_thrust_controller_node" />
-      <config projectName="Project" targetName="dynamic_reconfigure_generate_messages_cpp" />
-      <config projectName="Project" targetName="_rotors_comm_generate_messages_check_deps_WindSpeed" />
-      <config projectName="Project" targetName="mav_msgs_generate_messages_nodejs" />
-      <config projectName="Project" targetName="rotors_comm_gennodejs" />
-      <config projectName="Project" targetName="run_tests" />
-      <config projectName="Project" targetName="rotors_gazebo_wind_plugin" />
-      <config projectName="Project" targetName="octomap_msgs_genpy" />
-      <config projectName="Project" targetName="nodelet_generate_messages_py" />
-      <config projectName="Project" targetName="_mav_msgs_generate_messages_check_deps_AttitudeThrust" />
-      <config projectName="Project" targetName="nodelet_generate_messages_lisp" />
       <config projectName="Project" targetName="gazebo_plugins_gencfg" />
-      <config projectName="Project" targetName="actionlib_msgs_generate_messages_nodejs" />
-      <config projectName="Project" targetName="topic_tools_generate_messages_lisp" />
-      <config projectName="Project" targetName="tf2_msgs_generate_messages_lisp" />
-      <config projectName="Project" targetName="sensor_msgs_generate_messages_lisp" />
+      <config projectName="Project" targetName="geometry_msgs_generate_messages_nodejs" />
+      <config projectName="Project" targetName="mav_msgs_gennodejs" />
+      <config projectName="Project" targetName="octomap_ros" />
+      <config projectName="Project" targetName="mav_msgs_genlisp" />
+      <config projectName="Project" targetName="octomap_msgs_generate_messages_py" />
+      <config projectName="Project" targetName="rotors_gazebo_ros_interface_plugin" />
+      <config projectName="Project" targetName="gazebo_msgs_generate_messages_cpp" />
+      <config projectName="Project" targetName="rotors_comm_generate_messages_nodejs" />
+      <config projectName="Project" targetName="mav_planning_msgs_genpy" />
+      <config projectName="Project" targetName="octomap_msgs_genpy" />
+      <config projectName="Project" targetName="geometry_msgs_generate_messages_cpp" />
+      <config projectName="Project" targetName="octomap_msgs_generate_messages_nodejs" />
+      <config projectName="Project" targetName="sensor_msgs_generate_messages_cpp" />
+      <config projectName="Project" targetName="std_msgs_generate_messages_eus" />
+      <config projectName="Project" targetName="rotors_gazebo_odometry_plugin" />
+      <config projectName="Project" targetName="octomap_msgs_genlisp" />
+      <config projectName="Project" targetName="geometry_msgs_generate_messages_eus" />
+      <config projectName="Project" targetName="rosgraph_msgs_generate_messages_py" />
+      <config projectName="Project" targetName="_mav_msgs_generate_messages_check_deps_TorqueThrust" />
+      <config projectName="Project" targetName="bond_generate_messages_cpp" />
+      <config projectName="Project" targetName="sensor_msgs_generate_messages_eus" />
+      <config projectName="Project" targetName="actionlib_generate_messages_py" />
+      <config projectName="Project" targetName="octomap_msgs_geneus" />
+      <config projectName="Project" targetName="visualization_msgs_generate_messages_nodejs" />
+      <config projectName="Project" targetName="nav_msgs_generate_messages_py" />
+      <config projectName="Project" targetName="tf_generate_messages_lisp" />
+      <config projectName="Project" targetName="dynamic_reconfigure_generate_messages_py" />
+      <config projectName="Project" targetName="_mav_msgs_generate_messages_check_deps_RollPitchYawrateThrust" />
+      <config projectName="Project" targetName="dynamic_reconfigure_generate_messages_cpp" />
+      <config projectName="Project" targetName="actionlib_msgs_generate_messages_eus" />
+      <config projectName="Project" targetName="visualization_msgs_generate_messages_cpp" />
+      <config projectName="Project" targetName="dynamic_reconfigure_generate_messages_lisp" />
+      <config projectName="Project" targetName="actionlib_msgs_generate_messages_py" />
+      <config projectName="Project" targetName="sdf" />
+      <config projectName="Project" targetName="rosgraph_msgs_generate_messages_eus" />
+      <config projectName="Project" targetName="rotors_gazebo_gps_plugin" />
+      <config projectName="Project" targetName="rotors_comm_generate_messages_lisp" />
+      <config projectName="Project" targetName="sensor_msgs_generate_messages_nodejs" />
+      <config projectName="Project" targetName="std_msgs_generate_messages_py" />
       <config projectName="Project" targetName="mav_planning_msgs_generate_messages_py" />
-      <config projectName="Project" targetName="dynamic_reconfigure_generate_messages_eus" />
+      <config projectName="Project" targetName="nav_msgs_generate_messages_cpp" />
+      <config projectName="Project" targetName="gazebo_msgs_generate_messages_py" />
+      <config projectName="Project" targetName="mav_msgs" />
+      <config projectName="Project" targetName="_mav_planning_msgs_generate_messages_check_deps_PolygonWithHolesStamped" />
+      <config projectName="Project" targetName="tf_generate_messages_cpp" />
+      <config projectName="Project" targetName="geometry_msgs_generate_messages_py" />
       <config projectName="Project" targetName="mav_planning_msgs_gencpp" />
-      <config projectName="Project" targetName="waypoint_publisher_file" />
-      <config projectName="Project" targetName="_mav_planning_msgs_generate_messages_check_deps_PointCloudWithPose" />
-      <config projectName="Project" targetName="nodelet_generate_messages_nodejs" />
-      <config projectName="Project" targetName="nav_msgs_generate_messages_nodejs" />
       <config projectName="Project" targetName="mav_planning_msgs_generate_messages_eus" />
-      <config projectName="Project" targetName="trajectory_msgs_generate_messages_nodejs" />
+      <config projectName="Project" targetName="std_msgs_generate_messages_lisp" />
+      <config projectName="Project" targetName="rotors_gazebo_bag_plugin" />
+      <config projectName="Project" targetName="octomap_msgs_generate_messages" />
+      <config projectName="Project" targetName="topic_tools_generate_messages_lisp" />
+      <config projectName="Project" targetName="gazebo_msgs_generate_messages_lisp" />
+      <config projectName="Project" targetName="rotors_comm_genpy" />
+      <config projectName="Project" targetName="_catkin_empty_exported_target" />
+      <config projectName="Project" targetName="run_tests" />
+      <config projectName="Project" targetName="nodelet_generate_messages_lisp" />
+      <config projectName="Project" targetName="bond_generate_messages_lisp" />
+      <config projectName="Project" targetName="rotors_gazebo_motor_model" />
+      <config projectName="Project" targetName="rotors_gazebo_lidar_plugin" />
+      <config projectName="Project" targetName="_octomap_msgs_generate_messages_check_deps_GetOctomap" />
+      <config projectName="Project" targetName="_mav_msgs_generate_messages_check_deps_GpsWaypoint" />
+      <config projectName="Project" targetName="mav_planning_msgs_genlisp" />
+      <config projectName="Project" targetName="drone_control_node" />
+      <config projectName="Project" targetName="tf2_msgs_generate_messages_nodejs" />
+      <config projectName="Project" targetName="mav_planning_msgs_generate_messages" />
+      <config projectName="Project" targetName="lee_position_controller_node" />
+      <config projectName="Project" targetName="std_msgs_generate_messages_cpp" />
+      <config projectName="Project" targetName="rotors_gazebo_controller_interface" />
       <config projectName="Project" targetName="_mav_planning_msgs_generate_messages_check_deps_PolygonWithHoles" />
-      <config projectName="Project" targetName="rotors_comm_generate_messages_eus" />
-      <config projectName="Project" targetName="visualization_msgs_generate_messages_eus" />
+      <config projectName="Project" targetName="visualization_msgs_generate_messages_py" />
+      <config projectName="Project" targetName="sensor_msgs_generate_messages_lisp" />
+      <config projectName="Project" targetName="mav_planning_msgs_geneus" />
+      <config projectName="Project" targetName="tf2_msgs_generate_messages_eus" />
+      <config projectName="Project" targetName="gazebo_msgs_generate_messages_nodejs" />
+      <config projectName="Project" targetName="mav_msgs_generate_messages_py" />
+      <config projectName="Project" targetName="gmock_main" />
+      <config projectName="Project" targetName="actionlib_msgs_generate_messages_lisp" />
+      <config projectName="Project" targetName="topic_tools_generate_messages_eus" />
+      <config projectName="Project" targetName="nodelet_generate_messages_cpp" />
+      <config projectName="Project" targetName="mav_msgs_generate_messages_cpp" />
+      <config projectName="Project" targetName="actionlib_msgs_generate_messages_cpp" />
+      <config projectName="Project" targetName="std_srvs_generate_messages_eus" />
+      <config projectName="Project" targetName="_octomap_msgs_generate_messages_check_deps_OctomapWithPose" />
+      <config projectName="Project" targetName="trajectory_msgs_generate_messages_eus" />
       <config projectName="Project" targetName="_mav_planning_msgs_generate_messages_check_deps_PolynomialTrajectory4D" />
+      <config projectName="Project" targetName="rosgraph_msgs_generate_messages_cpp" />
+      <config projectName="Project" targetName="mav_msgs_generate_messages" />
+      <config projectName="Project" targetName="tests" />
+      <config projectName="Project" targetName="actionlib_generate_messages_cpp" />
+      <config projectName="Project" targetName="roll_pitch_yawrate_thrust_controller_node" />
+      <config projectName="Project" targetName="gazebo_msgs_generate_messages_eus" />
+      <config projectName="Project" targetName="rotors_comm_generate_messages" />
+      <config projectName="Project" targetName="tf2_msgs_generate_messages_cpp" />
+      <config projectName="Project" targetName="_mav_planning_msgs_generate_messages_check_deps_PolygonService" />
+      <config projectName="Project" targetName="topic_tools_generate_messages_nodejs" />
+      <config projectName="Project" targetName="rotors_gazebo_fw_dynamics_plugin" />
+      <config projectName="Project" targetName="_mav_msgs_generate_messages_check_deps_Status" />
+      <config projectName="Project" targetName="clean_test_results" />
+      <config projectName="Project" targetName="_mav_msgs_generate_messages_check_deps_Actuators" />
+      <config projectName="Project" targetName="mav_msgs_generate_messages_nodejs" />
+      <config projectName="Project" targetName="_octomap_msgs_generate_messages_check_deps_BoundingBoxQuery" />
+      <config projectName="Project" targetName="roscpp_generate_messages_nodejs" />
+      <config projectName="Project" targetName="rotors_gazebo_imu_plugin" />
+      <config projectName="Project" targetName="mav_planning_msgs_generate_messages_nodejs" />
+      <config projectName="Project" targetName="rotors_gazebo_pressure_plugin" />
+      <config projectName="Project" targetName="_octomap_msgs_generate_messages_check_deps_Octomap" />
+      <config projectName="Project" targetName="rotors_comm_gennodejs" />
+      <config projectName="Project" targetName="_mav_msgs_generate_messages_check_deps_RateThrust" />
+      <config projectName="Project" targetName="_mav_msgs_generate_messages_check_deps_AttitudeThrust" />
+      <config projectName="Project" targetName="mav_planning_msgs_gennodejs" />
+      <config projectName="Project" targetName="roscpp_generate_messages_py" />
+      <config projectName="Project" targetName="rotors_gazebo_multirotor_base_plugin" />
+      <config projectName="Project" targetName="std_srvs_generate_messages_nodejs" />
+      <config projectName="Project" targetName="tf2_msgs_generate_messages_lisp" />
+      <config projectName="Project" targetName="topic_tools_generate_messages_py" />
+      <config projectName="Project" targetName="roscpp_generate_messages_eus" />
+      <config projectName="Project" targetName="mav_msgs_generate_messages_eus" />
+      <config projectName="Project" targetName="lee_position_controller" />
+      <config projectName="Project" targetName="rotors_joy_interface" />
+      <config projectName="Project" targetName="LiftDragPlugin" />
+      <config projectName="Project" targetName="sensor_msgs_generate_messages_py" />
+      <config projectName="Project" targetName="trajectory_msgs_generate_messages_nodejs" />
+      <config projectName="Project" targetName="_mav_planning_msgs_generate_messages_check_deps_PolynomialSegment4D" />
+      <config projectName="Project" targetName="mav_msgs_geneus" />
+      <config projectName="Project" targetName="dynamic_reconfigure_gencfg" />
+      <config projectName="Project" targetName="rotors_comm_generate_messages_eus" />
+      <config projectName="Project" targetName="actionlib_generate_messages_lisp" />
+      <config projectName="Project" targetName="visualization_msgs_generate_messages_lisp" />
+      <config projectName="Project" targetName="std_srvs_generate_messages_cpp" />
+      <config projectName="Project" targetName="waypoint_publisher" />
+      <config projectName="Project" targetName="waypoint_publisher_file" />
+      <config projectName="Project" targetName="bond_generate_messages_py" />
+      <config projectName="Project" targetName="geometry_msgs_generate_messages_lisp" />
+      <config projectName="Project" targetName="topic_tools_generate_messages_cpp" />
+      <config projectName="Project" targetName="octomap_msgs_gennodejs" />
+      <config projectName="Project" targetName="octomap_msgs_generate_messages_eus" />
+      <config projectName="Project" targetName="_mav_msgs_generate_messages_check_deps_FilteredSensorData" />
+      <config projectName="Project" targetName="std_srvs_generate_messages_lisp" />
+      <config projectName="Project" targetName="trajectory_msgs_generate_messages_cpp" />
+      <config projectName="Project" targetName="trajectory_msgs_generate_messages_lisp" />
+      <config projectName="Project" targetName="mavlink_interface_node" />
+      <config projectName="Project" targetName="tf_generate_messages_nodejs" />
+      <config projectName="Project" targetName="rosgraph_msgs_generate_messages_lisp" />
+      <config projectName="Project" targetName="_mav_planning_msgs_generate_messages_check_deps_PlannerService" />
+      <config projectName="Project" targetName="dynamic_reconfigure_generate_messages_eus" />
+      <config projectName="Project" targetName="nav_msgs_generate_messages_lisp" />
+      <config projectName="Project" targetName="tf_generate_messages_py" />
+      <config projectName="Project" targetName="download_extra_data" />
+      <config projectName="Project" targetName="mav_msgs_generate_messages_lisp" />
+      <config projectName="Project" targetName="trajectory_msgs_generate_messages_py" />
+      <config projectName="Project" targetName="nav_msgs_generate_messages_nodejs" />
+      <config projectName="Project" targetName="dynamic_reconfigure_generate_messages_nodejs" />
+      <config projectName="Project" targetName="rotors_comm_generate_messages_cpp" />
+      <config projectName="Project" targetName="rotors_gazebo_wind_plugin" />
+      <config projectName="Project" targetName="tf2_msgs_generate_messages_py" />
+      <config projectName="Project" targetName="rotors_comm_geneus" />
+      <config projectName="Project" targetName="visualization_msgs_generate_messages_eus" />
+      <config projectName="Project" targetName="bond_generate_messages_eus" />
+      <config projectName="Project" targetName="actionlib_msgs_generate_messages_nodejs" />
+      <config projectName="Project" targetName="_rotors_comm_generate_messages_check_deps_Octomap" />
+      <config projectName="Project" targetName="std_msgs_generate_messages_nodejs" />
+      <config projectName="Project" targetName="mav_planning_msgs_generate_messages_cpp" />
+      <config projectName="Project" targetName="mav_planning_msgs_generate_messages_lisp" />
+      <config projectName="Project" targetName="rotors_gazebo_magnetometer_plugin" />
+      <config projectName="Project" targetName="gtest" />
+      <config projectName="Project" targetName="_rotors_comm_generate_messages_check_deps_WindSpeed" />
+      <config projectName="Project" targetName="_rotors_comm_generate_messages_check_deps_RecordRosbag" />
+      <config projectName="Project" targetName="hovering_example" />
     </generated>
   </component>
   <component name="CMakeSettings">
@@ -657,7 +657,6 @@
   <component name="ClangdSettings">
     <option name="formatViaClangd" value="false" />
   </component>
-  <component name="ExecutionTargetManager" SELECTED_TARGET="CMakeBuildProfile:Debug" />
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
@@ -822,11 +821,6 @@
       </method>
     </configuration>
     <configuration name="_rotors_comm_generate_messages_check_deps_WindSpeed" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="_rotors_comm_generate_messages_check_deps_WindSpeed" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="Project" RUN_TARGET_NAME="_rotors_comm_generate_messages_check_deps_WindSpeed">
-      <method v="2">
-        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
-      </method>
-    </configuration>
-    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" PASS_PARENT_ENVS_2="true">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
@@ -1692,6 +1686,8 @@
       </method>
     </configuration>
     <list>
+      <item itemvalue="Google Test.gmock_main" />
+      <item itemvalue="Google Test.gtest_main" />
       <item itemvalue="CMake Application.LiftDragPlugin" />
       <item itemvalue="CMake Application._catkin_empty_exported_target" />
       <item itemvalue="CMake Application._mav_msgs_generate_messages_check_deps_Actuators" />
@@ -1783,6 +1779,7 @@
       <item itemvalue="CMake Application.mav_planning_msgs_genlisp" />
       <item itemvalue="CMake Application.mav_planning_msgs_gennodejs" />
       <item itemvalue="CMake Application.mav_planning_msgs_genpy" />
+      <item itemvalue="CMake Application.mavlink_interface_node" />
       <item itemvalue="CMake Application.nav_msgs_generate_messages_cpp" />
       <item itemvalue="CMake Application.nav_msgs_generate_messages_eus" />
       <item itemvalue="CMake Application.nav_msgs_generate_messages_lisp" />
@@ -1817,7 +1814,6 @@
       <item itemvalue="CMake Application.rosgraph_msgs_generate_messages_lisp" />
       <item itemvalue="CMake Application.rosgraph_msgs_generate_messages_nodejs" />
       <item itemvalue="CMake Application.rosgraph_msgs_generate_messages_py" />
-      <item itemvalue="CMake Application.mavlink_interface_node" />
       <item itemvalue="CMake Application.rotors_comm_gencpp" />
       <item itemvalue="CMake Application.rotors_comm_generate_messages" />
       <item itemvalue="CMake Application.rotors_comm_generate_messages_cpp" />
@@ -1889,8 +1885,6 @@
       <item itemvalue="CMake Application.visualization_msgs_generate_messages_py" />
       <item itemvalue="CMake Application.waypoint_publisher" />
       <item itemvalue="CMake Application.waypoint_publisher_file" />
-      <item itemvalue="Google Test.gmock_main" />
-      <item itemvalue="Google Test.gtest_main" />
     </list>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
@@ -1924,6 +1918,8 @@
       <workItem from="1599429466911" duration="15000" />
       <workItem from="1599437431611" duration="1805000" />
       <workItem from="1599439892468" duration="52000" />
+      <workItem from="1599529823956" duration="55000" />
+      <workItem from="1599529966369" duration="8000" />
     </task>
     <servers />
   </component>

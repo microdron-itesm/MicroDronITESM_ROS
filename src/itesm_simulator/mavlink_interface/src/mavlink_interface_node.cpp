@@ -57,7 +57,7 @@ int main(int argc, char **argv){
         udp_conn_send(&data, send_buf, send_len);
 
         ros::spinOnce();
-        std::this_thread::sleep_for(std::chrono::milliseconds(1));
+        std::this_thread::sleep_for(std::chrono::milliseconds(5));
     }
     if (receive_thread.joinable()){
         receive_thread.join();
@@ -78,7 +78,7 @@ void receiveThread(udp_conn_data* data,  ros::NodeHandle *nodeHandle, const std:
         memset(&recv_buf, 0, sizeof(recv_buf));
         int recv_len = udp_conn_recv(data, recv_buf, bufLen);
 
-        if (recv_len > 0) {
+        while (recv_len > 0) {
             mavlink_message_t recv_msg;
             mavlink_status_t status;
             mavlink_actuator_output_status_t actuatorOutputStatus;
@@ -102,6 +102,7 @@ void receiveThread(udp_conn_data* data,  ros::NodeHandle *nodeHandle, const std:
                     }
                 }
             }
+            recv_len = udp_conn_recv(data, recv_buf, bufLen);
         }
         std::this_thread::sleep_for(std::chrono::milliseconds(1));
     }
