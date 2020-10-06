@@ -7,6 +7,7 @@
 MAVLinkInterface::MAVLinkInterface(const std::string& mav_name) : mav_name(mav_name){
     imuSub = nodeHandle.subscribe("/" + mav_name + "/imu", 1000, &MAVLinkInterface::onImuMessageReceived, this);
     irSub = nodeHandle.subscribe("/" + mav_name + "/ir", 1000, &MAVLinkInterface::onTofMessageReceived, this);
+    poseSub = nodeHandle.subscribe("/" + mav_name + "/ground_truth/pose_with_covariance", 1000, &MAVLinkInterface::onPoseMessageReceived, this);
     attitude.time_boot_ms = 0;
 }
 
@@ -33,4 +34,14 @@ void MAVLinkInterface::onTofMessageReceived(const sensor_msgs::Range::ConstPtr& 
     distanceSensor.current_distance = (uint16_t) (msg->range * 100.0); //m -> cm
     distanceSensor.max_distance = (uint16_t) (msg->max_range * 100.0);
     distanceSensor.min_distance = (uint16_t) (msg->min_range * 100.0);
+}
+
+const mavlink_vicon_position_estimate_t & MAVLinkInterface::getPose() const {
+    return poseEstimate;
+}
+
+void MAVLinkInterface::onPoseMessageReceived(const geometry_msgs::PoseWithCovarianceStamped::ConstPtr& msg){
+    poseEstimate.x = msg->pose.pose.position.x;
+    poseEstimate.y = msg->pose.pose.position.y;
+    poseEstimate.z = msg->pose.pose.position.z;
 }

@@ -37,6 +37,7 @@ int main(int argc, char **argv){
     MAVLinkInterface mavlinkInterface(droneName);
     mavlink_attitude_quaternion_t attitude;
     mavlink_distance_sensor_t  distanceSensor;
+    mavlink_vicon_position_estimate_t positionEstimate;
 
     std::thread receive_thread = std::thread(&receiveThread, &data, &nodeHandle, droneName);
 
@@ -44,7 +45,7 @@ int main(int argc, char **argv){
         memset(&send_buf, 0, sizeof(send_buf));
 
         attitude = mavlinkInterface.getAttitude();
-        mavlink_message_t attitude_msg, distance_msg, accel_msg;
+        mavlink_message_t attitude_msg, distance_msg, accel_msg, pose_msg;
         mavlink_msg_attitude_quaternion_pack(1, 200, &attitude_msg, attitude.time_boot_ms, attitude.q1, attitude.q2, attitude.q3, attitude.q4, attitude.rollspeed, attitude.pitchspeed, attitude.yawspeed, attitude.repr_offset_q);
         int send_len = mavlink_msg_to_send_buffer(send_buf, &attitude_msg);
         udp_conn_send(&data, send_buf, send_len);
@@ -54,6 +55,13 @@ int main(int argc, char **argv){
 //        mavlink_msg_distance_sensor_pack(1, 200, &distance_msg, distanceSensor.time_boot_ms, distanceSensor.min_distance, distanceSensor.max_distance, 5, distanceSensor.type, distanceSensor.id, distanceSensor.orientation, distanceSensor.covariance, distanceSensor.horizontal_fov, distanceSensor.vertical_fov, distanceSensor.quaternion, distanceSensor.signal_quality);
 
         send_len = mavlink_msg_to_send_buffer(send_buf, &distance_msg);
+        udp_conn_send(&data, send_buf, send_len);
+
+        positionEstimate = mavlinkInterface.getPose();
+        mavlink_msg_vicon_position_estimate_pack(1, 200, &pose_msg, 0, positionEstimate.x, positionEstimate.y, positionEstimate.z, positionEstimate.roll, positionEstimate.pitch, positionEstimate.yaw,
+                                                 nullptr);
+
+        send_len = mavlink_msg_to_send_buffer(send_buf, &pose_msg);
         udp_conn_send(&data, send_buf, send_len);
 
         ros::spinOnce();
