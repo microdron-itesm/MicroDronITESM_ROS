@@ -21,18 +21,29 @@ void receiveThread(udp_conn_data* data , ros::NodeHandle *nodeHandle, const std:
 int main(int argc, char **argv){
     ros::init(argc, argv, "mavlink_imu");
     ros::NodeHandle nodeHandle;
+    ros::NodeHandle privateHandle("~");
     std::string droneName;
 
-    if(!nodeHandle.getParam("mav_name", droneName)){
+    if(!privateHandle.getParam("mav_name", droneName)){
         droneName = "ardrone";
-        ROS_WARN("mavlink_imu was not given a mav_name! Using \"ardrone\" as default");
+        ROS_WARN("mavlink_imu was not given a mav_name! Using \"%s\" as default", droneName.c_str());
     }
 
     size_t bufLen = MAVLINK_MAX_PACKET_LEN + sizeof(uint64_t);
     uint8_t send_buf[bufLen];
 
+    int sendPort, recvPort;
+
+    if(!privateHandle.param("send_port", sendPort, 15000)){
+        ROS_WARN("mavlink_imu was not given a send_port! Using %d as default", sendPort);
+    }
+
+    if(!privateHandle.param("recv_port", recvPort, 15001)){
+        ROS_WARN("mavlink_imu was not given a recv_port! Using %d as default", recvPort);
+    }
+
     udp_conn_data data;
-    udp_conn_open_ip(&data, "127.0.0.1", 15000, 15001);
+    udp_conn_open_ip(&data, "127.0.0.1", sendPort, recvPort);
 
     MAVLinkInterface mavlinkInterface(droneName);
     mavlink_attitude_quaternion_t attitude;

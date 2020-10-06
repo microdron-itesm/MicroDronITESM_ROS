@@ -68,13 +68,14 @@ private:
 int main(int argc, char **argv){
     ros::init(argc, argv, "distance_calculator");
     ros::NodeHandle nodeHandle;
+    ros::NodeHandle privateHandle("~");
 
     ros::Rate updateRate(100);
 
     std::vector<std::string> trackedModels;
     std::string test;
 
-    if(!nodeHandle.getParam("/distance_calculator/tracked_models", trackedModels)){
+    if(!privateHandle.getParam("tracked_models", trackedModels)){
         ROS_ERROR("tracked_models not defined for Distance Calculator");
         ros::shutdown();
         return 0;
