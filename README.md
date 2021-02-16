@@ -4,7 +4,7 @@ Clone with:
 git clone --recurse-submodules https://github.com/AJahueyM/MicroDronITESM_ROS.git
 ```
 
-Follow the instructions as specified in the ROS Wiki http://wiki.ros.org/melodic/Installation/Ubuntu
+Follow the instructions as specified in the ROS Wiki http://wiki.ros.org/noetic/Installation/Ubuntu
 
 Make sure to install the needed dependencies
 On Ubuntu: 
