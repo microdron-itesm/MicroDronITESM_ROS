@@ -9,7 +9,7 @@ Follow the instructions as specified in the ROS Wiki http://wiki.ros.org/melodic
 Make sure to install the needed dependencies
 On Ubuntu: 
 ```
-sudo apt-get install ros-melodic-octomap libgoogle-glog-dev libsfml-dev 
+sudo apt-get install ros-noetic-octomap libgoogle-glog-dev libsfml-dev 
 ```
 
 
