@@ -1,7 +1,7 @@
 # MicroDronITESM_ROS
 Clone with:
 ```
-git clone --recurse-submodules https://github.com/AJahueyM/MicroDronITESM_ROS.git
+git clone --recurse-submodules https://github.com/microdron-itesm/MicroDronITESM_ROS.git
 ```
 
 Follow the instructions as specified in the ROS Wiki http://wiki.ros.org/noetic/Installation/Ubuntu
