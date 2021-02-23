@@ -1,15 +1,15 @@
 # MicroDronITESM_ROS
 Clone with:
 ```
-git clone --recurse-submodules https://github.com/AJahueyM/MicroDronITESM_ROS.git
+git clone --recurse-submodules https://github.com/microdron-itesm/MicroDronITESM_ROS.git
 ```
 
-Follow the instructions as specified in the ROS Wiki http://wiki.ros.org/melodic/Installation/Ubuntu
+Follow the instructions as specified in the ROS Wiki http://wiki.ros.org/noetic/Installation/Ubuntu
 
 Make sure to install the needed dependencies
 On Ubuntu: 
 ```
-sudo apt-get install ros-melodic-octomap libgoogle-glog-dev libsfml-dev 
+sudo apt-get install ros-noetic-octomap libgoogle-glog-dev libsfml-dev 
 ```
 
 
