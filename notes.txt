@@ -1,0 +1,4 @@
+catkin_make
+source devel/setup.bash
+roslaunch rotors_gazebo mav.launch mav_name:=ardrone world_name:=basic paused:=false
+rosrun drone_control drone_control_node
