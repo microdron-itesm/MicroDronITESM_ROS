@@ -5,3 +5,6 @@ rosrun drone_control drone_control_node
 
 for Waypoint Swarm Launch >>
 roslaunch rotors_gazebo mav_swarm_waypoint.launch mav_name:=ardrone world_name:=basic paused:=false
+
+para mover usando linea de comando
+rostopic pub /${targetDrone}/command/pose geometry_msgs/PoseStamped "{header: auto, pose: {position: [$x,$y,$z]}}"
