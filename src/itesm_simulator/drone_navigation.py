@@ -4,14 +4,19 @@ from sensor_msgs.msg import Imu, NavSatFix
 from std_msgs.msg import Float32, String
 from pyquaternion import Quaternion
 from tf.transformations import quaternion_from_euler
+from visualModule import lookForQR,decodeFileFromPath
+import json
 import time
 import math
 
+WAIT_TIME = 1
+
 class Follower:
-    def __init__(self,x,y,z,topic):
+    def __init__(self,x,y,z,topic,heightFactor = 1):
         self.current_x = x
         self.current_y = y
         self.current_z = z
+        self.heightFactor = heightFactor
         self.current_yaw = quaternion_from_euler(0, 0, 0)
         self.position_target_pub = rospy.Publisher(f'/{topic}/command/pose', PoseStamped, queue_size=10)
 
@@ -50,6 +55,9 @@ class Follower:
 
         return pose
 
+
+    def getHeightFactor(self) -> int:
+        return self.heightFactor
     # def set_orientation(self, yaw):
     #     pose = PoseStamped()
     #     pose.header.stamp = rospy.Time.now()
@@ -76,10 +84,10 @@ class Follower:
 
 class Commander:
 
-    AVAILABLE_DRONES    = ("gs0","gs1")
+    AVAILABLE_DRONES    = ("gs1","gs0")
     INITIAL_POSITIONS   = (
         (0,0,0),
-        (4,0,0)
+        (0,0,1)
     )
     CONSTANT_Z = .8
 
@@ -92,7 +100,7 @@ class Commander:
         self.drones = []
         for x in range(self.numDrones):
             t = Commander.INITIAL_POSITIONS[x]
-            self.drones.append(Follower(t[0],t[1],t[2],Commander.AVAILABLE_DRONES[x]))
+            self.drones.append(Follower(t[0],t[1],t[2],Commander.AVAILABLE_DRONES[x],x+1))
         self.currentWaypoint = 0
 
     def nextPosition(self) -> int:
@@ -101,39 +109,71 @@ class Commander:
         i = 0
         for d in self.drones:
             waypoints = self.wayPoints[i][self.currentWaypoint]
-            # d.move(waypoints[0],waypoints[1],waypoints[2])
-            d.move(waypoints[0],waypoints[1],Commander.CONSTANT_Z)
+            if(len(waypoints) == 3):
+                d.move(waypoints[0], waypoints[1], waypoints[2])
+            else:
+                d.move(waypoints[0], waypoints[1], Commander.CONSTANT_Z * d.getHeightFactor())
             i += 1
         self.currentWaypoint += 1
         if(self.currentWaypoint >= len(self.wayPoints[0]) and self.loopDrones):
             self.currentWaypoint = 0
         return self.currentWaypoint
 
-
-def readInstructions() -> list:
-    f = open("visualize.csv","r")
-    instructions = f.readlines()
-    f.close()
-    result = []
-    for x in instructions:
+def separateInstructions(l) -> list:
+    instructions = []
+    for x in l:
         s = x.strip().split(",")
         temp = []
         for y in s:
             tempFactors = y.split(";")
             if(len(tempFactors) > 1):
                 temp.append(tuple([float(z) for z in tempFactors]))
-        result.append(tuple(temp))
-    return result
+        if(len(temp) > 0):
+            instructions.append(tuple(temp))
+    return instructions
+
+def readInstructions() -> list:
+    f = open("visualize.csv","r")
+    instructions = f.readlines()
+    f.close()
+    return separateInstructions(instructions)
+
+def readFromImgFile() -> list:
+    d = json.loads(decodeFileFromPath("QR.png")[0].data.decode("UTF-8"))
+    # d = {'instructions': {'0': '0.2;0.2;0.2,1.2;0.2;0.2,1.2;1.2;0.2,0.2;1.2;0.2,0.2;1.2;1.2,1.2;1.2;1.2,1.2;0.2;1.2,0.2;0.2;1.2,0.2;0.2;0.2,0.2;1.2;0.2,1.2;1.2;0.2,1.2;1.2;1.2,1.2;0.2;0.2,1.2;0.2;1.2,0.2;1.2;1.2,0.2;0.2;1.2,'}}
+    return separateInstructions(list(d["instructions"].values()))
+
+def readFromCamera() -> list:
+    global WAIT_TIME
+    d = json.loads(lookForQR())
+    WAIT_TIME = 2
+    return separateInstructions(list(d["instructions"].values()))
+
 
 if __name__ == "__main__":
 
-    instructions = readInstructions()
+    option = -1
+    try:
+        option = int(input("Choose the option that you want:\n\t1. Read from CSV\n\t2. Read from ImgFile\n\t3. Read from CameraFeed\n"))
+        if option < 1 or option > 3:
+            raise Exception("Not an option")
+    except Exception:
+        print("please pick a valid option")
+    
+    instructions = []
 
+    if(option == 1):
+        instructions = readInstructions()
+    elif(option == 2):
+        instructions = readFromImgFile()
+    elif(option == 3):
+        instructions = readFromCamera()
+    # print(instructions)
     c = Commander(instructions)
     time.sleep(1)
     try:
         while(c.nextPosition() >= 0):
-                time.sleep(1)
+                time.sleep(WAIT_TIME)
     except KeyboardInterrupt:
         pass
     print("Recorrido concluido")

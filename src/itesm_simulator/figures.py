@@ -13,7 +13,6 @@ def heartEquation(x : float, scale : int,neg = False) -> float:
     temp = abs(x) ** (2/3)
     return result + temp
 
-
 def makeHeart(size : int, precision : int) -> list:
     limit = int(math.sqrt(size))
     size = limit ** 2
@@ -98,17 +97,60 @@ def makeTriangle(size : int, stepSize : int) -> list:
     ]
 
 def merge(l : list) -> list:
-    boolean = len(l[0]) != len(l[1])
-    if(boolean):
-        raise IndexError("The arrays are wrong size")
-    return [f"{l[0][x]};{l[1][x]}" for x in range(len(l[0]))]
+    d3 = len(l) == 3
+    if not d3:
+        boolean = len(l[0]) != len(l[1])
+        if(boolean):
+            raise IndexError("The arrays are wrong size")
+        return [f"{l[0][x]};{l[1][x]}" for x in range(len(l[0]))]
+    else:
+        bA = len(l[0]) == len(l[1])
+        bB =  len(l[2]) == len(l[1])
+        if(not (bA and bB)):
+            raise IndexError("The arrays are wrong size")
+        return [f"{l[0][x]};{l[1][x]};{l[2][x]}" for x in range(len(l[0]))]
 
-def makeSpecialHeart(size,step) -> list:
+def halfHeart(size, precision, left = True):
     coords = [
         [], # x
         []  # y
     ]
+    limit = int(math.sqrt(size))
+    size = limit ** 2
+    steps = 1/precision
+    i = 0
+    while(abs(i) < limit):
+        coords[0].append(i)
+        coords[1].append(heartEquation(i,size))
+        i += steps if not left else -steps
+    while(abs(i) > 0):
+        coords[0].append(i)
+        coords[1].append(heartEquation(i,size,True))
+        i -= steps if not left else -steps
+    return coords
+
+def makeSpecialHeart(size,precision) -> str:
+    coords = halfHeart(size,precision)
+    t = [f"{coords[0][x]};{coords[1][x]}" for x in range(len(coords[0]))]
+    s = ""
+    for x in t:
+        s += x + ','
+    s += '\n'
+    coords = halfHeart(size,precision,False)
+    t = [f"{coords[0][x]};{coords[1][x]}" for x in range(len(coords[0]))]
+    for x in t:
+        s += x + ','
+    return s
     
+def makeCube(size) -> list:
+    xAxis = [0,1,1,0,0,1,1,0,0,0,1,1,1,1,0,0]
+    yAxis = [0,0,1,1,1,1,0,0,0,1,1,1,0,0,1,0]
+    zAxis = [0,0,0,0,1,1,1,1,0,0,0,1,0,1,1,1]
+    return [
+        list((np.array(xAxis))      * size),
+        list((np.array(yAxis))      * size),
+        list((np.array(zAxis)+.5)   * size)
+    ]
 
 def stringFormat(l : list,drones : int) -> str:
     s = ""
@@ -117,8 +159,8 @@ def stringFormat(l : list,drones : int) -> str:
     for padding in range(drones):
         for x in newL:
             s += x + ","
-        if(padding < drones-1):
-            s += "\n"
+        # if(padding < drones-1):
+        s += "\n"
         newL.rotate(partsLength)
         # print(newL[0])
     return s
@@ -154,6 +196,29 @@ if __name__ == "__main__":
         resultStr = stringFormat(merge(makeHeart(size,stepSize)),args.drones)
     elif(args.figure == "special"):
         size = 9
-        stepSize = 8
+        stepSize = 4
         resultStr = makeSpecialHeart(size,stepSize)
+    elif(args.figure == "all"):
+        # print("Cirlce")
+        resultStr += stringFormat(merge(makeCircle(2,8)),2)
+        # print("Square")
+        resultStr += stringFormat(merge(makeSquare(4,1)),2)
+        # print("Triangle")
+        resultStr += stringFormat(merge(makeTriangle(7,1)),2)
+        # print("Corazon")
+        resultStr += stringFormat(merge(makeHeart(9,4)),2)
+        # print("Special Heart")
+        resultStr += makeSpecialHeart(9,4)
+        temp = resultStr.rstrip().split('\n')
+        resultStr = ""
+        for x in range(0,len(temp),2):
+            resultStr += temp[x]
+        resultStr += '\n'
+        for x in range(1,len(temp),2):
+            resultStr += temp[x]
+        resultStr += '\n'
+    elif(args.figure == "cube"):
+        size = int(args.size)
+        resultStr = stringFormat(merge(makeCube(size)),args.drones)
+
     print(resultStr)
