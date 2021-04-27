@@ -1,5 +1,10 @@
 import cv2
 from pyzbar.pyzbar import decode
+from sensor_msgs.msg import Image
+from cv_bridge import CvBridge, CvBridgeError
+import rospy
+
+resultData = None
 
 def decodeFileFromPath(path : str) -> list:
     return decode(cv2.imread(path))
@@ -7,7 +12,7 @@ def decodeFileFromPath(path : str) -> list:
 def decodeFileFromFrame(f) -> list:
     return decode(f)
 
-def lookForQR() -> str:
+def webCameraQR() -> str:
     WINDOW_WIDTH    = 640
     WINDOW_HEIGHT   = 480
     cap = cv2.VideoCapture(0)
@@ -34,6 +39,33 @@ def lookForQR() -> str:
     cap.release()
     return result[0].data.decode("UTF-8")
 
+def dronCameraCallback(image):
+    global resultData
+    br = CvBridge()
+    try:
+        cv_image = br.imgmsg_to_cv2(image, "bgr8")
+    except CvBridgeError as e:
+        print(e)
+    if cv_image is not None:
+        result = decodeFileFromFrame(cv_image)
+        if len(result) > 0:
+            resultData = result[0].data.decode("UTF-8")
+        else:
+            resultData = None
+
+def droneCameraQR():
+    global resultData
+    rospy.init_node("qrcodeReader")
+    image_sub = rospy.Subscriber("/gs1/vi_sensor/camera_depth/camera/image_raw", Image, dronCameraCallback)
+
+    while not rospy.core.is_shutdown():
+        if resultData is None:
+            rospy.rostime.wallsleep(0.5)
+        else:
+            break
+    
+    return resultData
+
 if __name__ == "__main__":
-    r = lookForQR()
+    r = webCameraQR()
     print(r)

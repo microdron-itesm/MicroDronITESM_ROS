@@ -4,7 +4,7 @@ from sensor_msgs.msg import Imu, NavSatFix
 from std_msgs.msg import Float32, String
 from pyquaternion import Quaternion
 from tf.transformations import quaternion_from_euler
-from visualModule import lookForQR,decodeFileFromPath
+from visualModule import decodeFileFromPath,droneCameraQR,webCameraQR
 import json
 import time
 import math
@@ -92,7 +92,8 @@ class Commander:
     CONSTANT_Z = .8
 
     def __init__(self,instructions : list,looping = False):
-        rospy.init_node("commander_node")
+        if not rospy.core.is_initialized():
+            rospy.init_node("commander_node")
         rate = rospy.Rate(20)
         self.wayPoints = instructions
         self.loopDrones = looping
@@ -145,17 +146,24 @@ def readFromImgFile() -> list:
 
 def readFromCamera() -> list:
     global WAIT_TIME
-    d = json.loads(lookForQR())
+    d = json.loads(webCameraQR())
     WAIT_TIME = 2
     return separateInstructions(list(d["instructions"].values()))
+
+def readFromCamera() -> list:
+    global WAIT_TIME
+    d = json.loads(droneCameraQR())
+    WAIT_TIME = 2
+    return separateInstructions(list(d["instructions"].values()))
+
 
 
 if __name__ == "__main__":
 
     option = -1
     try:
-        option = int(input("Choose the option that you want:\n\t1. Read from CSV\n\t2. Read from ImgFile\n\t3. Read from CameraFeed\n"))
-        if option < 1 or option > 3:
+        option = int(input("Choose the option that you want:\n\t1. Read from CSV\n\t2. Read from ImgFile\n\t3. Read from WebCamera\n\t4. Read from DroneCamera \n"))
+        if option < 1 or option > 4:
             raise Exception("Not an option")
     except Exception:
         print("please pick a valid option")
@@ -168,7 +176,8 @@ if __name__ == "__main__":
         instructions = readFromImgFile()
     elif(option == 3):
         instructions = readFromCamera()
-    # print(instructions)
+    elif(option == 4):
+        instructions = readFromCamera()
     c = Commander(instructions)
     time.sleep(1)
     try:
