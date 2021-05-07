@@ -6,12 +6,16 @@ from collections import deque
 def roundTo0(f : float) -> float:
     return 0 if abs(f) < .0001 else f
 
+def round2f(f : float) -> float:
+    return float("{:.2f}".format(f))
+
 def heartEquation(x : float, scale : int,neg = False) -> float:
     result = math.sqrt(scale - math.pow(x,2))
     if(neg):
         result = -result
     temp = abs(x) ** (2/3)
     return result + temp
+
 
 def makeHeart(size : int, precision : int) -> list:
     limit = int(math.sqrt(size))
@@ -22,12 +26,12 @@ def makeHeart(size : int, precision : int) -> list:
     i = -limit
     while(i<limit):
         xAxis.append(i)
-        yAxis.append(heartEquation(i,size))
+        yAxis.append(round2f(heartEquation(i,size)))
         i += steps
     i = limit
     while(i>-limit):
         xAxis.append(i)
-        yAxis.append(heartEquation(i,size,True))
+        yAxis.append(round2f(heartEquation(i,size,True)))
         i -= steps
     return [
         xAxis,
@@ -67,8 +71,8 @@ def makeCircle(radius : float,stepSize : int) -> list:
     i = 0
     while i < math.pi*2:
         ##some code
-        result[0].append(roundTo0(math.sin(i)*radius)) # values for the x axis
-        result[1].append(roundTo0(math.cos(i)*radius)) # values for the Y axis
+        result[0].append(round2f(roundTo0(math.sin(i)*radius))) # values for the x axis
+        result[1].append(round2f(roundTo0(math.cos(i)*radius))) # values for the Y axis
         i += s
     return result
 
@@ -150,6 +154,14 @@ def makeCube(size) -> list:
         list((np.array(xAxis))      * size),
         list((np.array(yAxis))      * size),
         list((np.array(zAxis)+.5)   * size)
+    ]
+
+def makeSecret() -> list:
+    xAxis = [0,1,1.5,2,2.5,3,3,3.5,4,4,4.5,4.5,5.5,0]
+    yAxis = [0,0,-1,1,-1,-1,1,0,1,-1,-1,-1.5,3,0]
+    return [
+        xAxis,
+        yAxis
     ]
 
 def stringFormat(l : list,drones : int) -> str:

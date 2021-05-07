@@ -4,12 +4,9 @@ from sensor_msgs.msg import Imu, NavSatFix
 from std_msgs.msg import Float32, String
 from pyquaternion import Quaternion
 from tf.transformations import quaternion_from_euler
-from visualModule import decodeFileFromPath,droneCameraQR,webCameraQR
-import json
+from readers import *
 import time
 import math
-
-WAIT_TIME = 1
 
 class Follower:
     def __init__(self,x,y,z,topic,heightFactor = 1):
@@ -120,44 +117,6 @@ class Commander:
             self.currentWaypoint = 0
         return self.currentWaypoint
 
-def separateInstructions(l) -> list:
-    instructions = []
-    for x in l:
-        s = x.strip().split(",")
-        temp = []
-        for y in s:
-            tempFactors = y.split(";")
-            if(len(tempFactors) > 1):
-                temp.append(tuple([float(z) for z in tempFactors]))
-        if(len(temp) > 0):
-            instructions.append(tuple(temp))
-    return instructions
-
-def readInstructions() -> list:
-    f = open("visualize.csv","r")
-    instructions = f.readlines()
-    f.close()
-    return separateInstructions(instructions)
-
-def readFromImgFile() -> list:
-    d = json.loads(decodeFileFromPath("QR.png")[0].data.decode("UTF-8"))
-    # d = {'instructions': {'0': '0.2;0.2;0.2,1.2;0.2;0.2,1.2;1.2;0.2,0.2;1.2;0.2,0.2;1.2;1.2,1.2;1.2;1.2,1.2;0.2;1.2,0.2;0.2;1.2,0.2;0.2;0.2,0.2;1.2;0.2,1.2;1.2;0.2,1.2;1.2;1.2,1.2;0.2;0.2,1.2;0.2;1.2,0.2;1.2;1.2,0.2;0.2;1.2,'}}
-    return separateInstructions(list(d["instructions"].values()))
-
-def readFromCamera() -> list:
-    global WAIT_TIME
-    d = json.loads(webCameraQR())
-    WAIT_TIME = 2
-    return separateInstructions(list(d["instructions"].values()))
-
-def readFromCamera() -> list:
-    global WAIT_TIME
-    d = json.loads(droneCameraQR())
-    WAIT_TIME = 2
-    return separateInstructions(list(d["instructions"].values()))
-
-
-
 if __name__ == "__main__":
 
     option = -1
@@ -167,22 +126,27 @@ if __name__ == "__main__":
             raise Exception("Not an option")
     except Exception:
         print("please pick a valid option")
+
     
     instructions = []
+    reader = Reader()
 
-    if(option == 1):
-        instructions = readInstructions()
-    elif(option == 2):
-        instructions = readFromImgFile()
-    elif(option == 3):
-        instructions = readFromCamera()
-    elif(option == 4):
-        instructions = readFromCamera()
+    if(option == 1): # CSV
+        reader = CsvFileReader()
+    elif(option == 2): # Img PNG
+        reader = ImgFileReader()
+    elif(option == 3): # WebCam
+        reader = WebCamReader()
+    elif(option == 4): # Drone Camera
+        reader = DronCamReader()
+
+    instructions = reader.readInstructions()
+
     c = Commander(instructions)
     time.sleep(1)
     try:
         while(c.nextPosition() >= 0):
-                time.sleep(WAIT_TIME)
+                time.sleep(reader.WAIT_TIME)
     except KeyboardInterrupt:
         pass
     print("Recorrido concluido")
