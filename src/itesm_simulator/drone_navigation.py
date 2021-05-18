@@ -4,7 +4,8 @@ from sensor_msgs.msg import Imu, NavSatFix
 from std_msgs.msg import Float32, String
 from pyquaternion import Quaternion
 from tf.transformations import quaternion_from_euler
-from readers import *
+from readers    import *
+from enums      import *
 import time
 import math
 
@@ -81,10 +82,13 @@ class Follower:
 
 class Commander:
 
-    AVAILABLE_DRONES    = ("gs1","gs0")
+    AVAILABLE_DRONES    = ("gs0","gs1","gs2","gs3","gs4")
     INITIAL_POSITIONS   = (
-        (0,0,0),
-        (0,0,1)
+        (0,0,1),
+        (1,0,0),
+        (2,0,0),
+        (3,0,0),
+        (4,0,0)
     )
     CONSTANT_Z = .8
 
@@ -142,7 +146,7 @@ if __name__ == "__main__":
 
     instructions = reader.readInstructions()
 
-    c = Commander(instructions)
+    c = Commander(instructions, False)
     time.sleep(1)
     try:
         while(c.nextPosition() >= 0):

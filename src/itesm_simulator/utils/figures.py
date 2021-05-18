@@ -164,6 +164,120 @@ def makeSecret() -> list:
         yAxis
     ]
 
+def cylinderHelper(arr : list, deltaVal : float, deltaRate : float, minVal : float, maxVal : float):
+    arr1 = []
+    arr2 = []
+
+    delta           = deltaRate
+    currentZAxis    = deltaVal
+
+    length = len(arr[0])
+
+    for point in range(length):
+        arr1.append([ arr[0][point] , arr[1][point] ,round2f(currentZAxis)])
+        arr2.append([-arr[0][point] ,-arr[1][point] ,round2f(currentZAxis)])
+        if(currentZAxis >= maxVal or currentZAxis <= minVal):
+            delta = -delta
+        currentZAxis += delta
+
+    return arr1, arr2
+
+def toString(arr : list) -> str:
+    result = ""
+    first = True
+
+    for point in arr:
+        if first:
+            first = False
+        else:
+            result += ","
+        result += f"{point[0]};{point[1]};{point[2]}"
+
+    return result
+
+
+def makeSpecialCylinder() -> str:
+    PRECISION = 4
+    points = [
+        [],
+        [],
+        [], # center
+        [],
+        []
+    ]
+
+    Z_AXIS_MIN = 1
+    Z_AXIS_MAX = 3
+    delta = .5
+    currentZAxis = Z_AXIS_MIN + delta
+
+    # Circle
+    RADIUS = .8
+    innerFigure = makeCircle(RADIUS,PRECISION)
+    points[1], points[3] = cylinderHelper(innerFigure, Z_AXIS_MIN + delta, delta ,Z_AXIS_MIN ,Z_AXIS_MAX)
+    # Rectangle 
+    innerFigure = makeSquare(round(RADIUS) + 2, 5)
+    temp1, temp2 = cylinderHelper(innerFigure, points[1][-1][-1], 0 ,Z_AXIS_MIN ,Z_AXIS_MAX)
+    points[1].extend(temp1)
+    points[3].extend(temp2)
+
+    delta = -0.5
+    
+    # Circle
+    RADIUS = 1.6
+    outerFigure = makeCircle(RADIUS,PRECISION)
+    points[0], points[4] = cylinderHelper(outerFigure, Z_AXIS_MAX + delta, delta ,Z_AXIS_MIN ,Z_AXIS_MAX)
+    # Rectangle
+    outerFigure = makeSquare(round(RADIUS) + 2, 5)
+    temp1, temp2 = cylinderHelper(outerFigure, points[0][-1][-1], 0 ,Z_AXIS_MIN ,Z_AXIS_MAX)
+    points[0].extend(temp1)
+    points[4].extend(temp2)
+
+    # Rectangles but exchanging heights
+    temp1, temp2 = cylinderHelper(innerFigure, points[0][-1][-1], 0 ,Z_AXIS_MIN ,Z_AXIS_MAX)
+    points[1].extend(temp1)
+    points[3].extend(temp2)
+
+    temp1, temp2 = cylinderHelper(outerFigure, points[1][-1][-1], 0 ,Z_AXIS_MIN ,Z_AXIS_MAX)
+    points[0].extend(temp1)
+    points[4].extend(temp2)
+
+    # Circle
+    # RADIUS = .8
+    # innerFigure = makeSquare(round(RADIUS)+2, 5)
+    # points[1], points[3] = cylinderHelper(innerFigure, Z_AXIS_MIN + delta, 0 ,Z_AXIS_MIN ,Z_AXIS_MAX)
+
+    # delta = -0.5
+    
+    # # Circle
+    # RADIUS = 1.6
+    # outerFigure = makeSquare(round(RADIUS)+2, 5)
+    # points[0], points[4] = cylinderHelper(outerFigure, Z_AXIS_MAX + delta, 0 ,Z_AXIS_MIN ,Z_AXIS_MAX)
+
+    points[2] = [[0,0,zValue[2]] for zValue in points[0]]
+
+    # Bottomless Triangle
+
+    points[0].append([-2,-2,points[0][-1][-1]])
+    points[1].append([-1,-1,points[1][-1][-1] + 1])
+    points[2].append([0,0,points[2][-1][-1] + 2])
+    points[3].append([1,1,points[3][-1][-1] + 1])
+    points[4].append([2,2,points[4][-1][-1]])
+
+    pointsStrings = [toString(droneInstructions) for droneInstructions in points]
+
+    result = ""
+    first = True
+
+    for s in pointsStrings:
+        if first :
+            first = False
+        else:
+            result += "\n"
+        result += s
+    
+    return result
+
 def stringFormat(l : list,drones : int) -> str:
     s = ""
     partsLength = len(l)//drones
@@ -185,7 +299,7 @@ parser.add_argument('stepSize', metavar='step', type=int,
 parser.add_argument('--drones', metavar='drones', type=int,
                     default=1, help='The number of sets to divide the points in due to the number of drones to handle, defaults to 1')
 parser.add_argument('--figure', dest='figure', type=str,
-                    help='options are >> cirlce square triangle heart')
+                    help='options are >> cirlce square triangle heart specialCilinder')
 
 if __name__ == "__main__":
     args = parser.parse_args()
@@ -232,5 +346,7 @@ if __name__ == "__main__":
     elif(args.figure == "cube"):
         size = int(args.size)
         resultStr = stringFormat(merge(makeCube(size)),args.drones)
+    elif(args.figure == "specialCilinder"):
+        resultStr = makeSpecialCylinder()
 
     print(resultStr)
