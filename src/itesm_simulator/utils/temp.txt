@@ -1,0 +1,2 @@
+python3 figures.py --figure heart 5 2 > visualize.csv && python3 instructorToJSON.py && python3 createQR.py
+python3 figures.py --figure circle 1 8 > visualize.csv && python3 instructorToJSON.py && python3 createQR.py
