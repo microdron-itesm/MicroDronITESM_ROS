@@ -81,30 +81,6 @@ class Follower:
     def getHeightFactor(self) -> int:
         return self.heightFactor
 
-    # def set_orientation(self, yaw):
-    #     pose = PoseStamped()
-    #     pose.header.stamp = rospy.Time.now()
-    #     if BODY_FLU:
-    #         pose.header.frame_id = 'base_link'
-
-    #     else:
-    #         pose.header.frame_id = 'map'
-
-
-    #     DEG_2_RAD = math.pi / 180.0
-    #     pose.pose.position.x = self.current_x
-    #     pose.pose.position.y = self.current_y
-    #     pose.pose.position.z = self.current_z
-
-        
-    #     q = quaternion_from_euler(yaw*DEG_2_RAD, 0, yaw*DEG_2_RAD)
-    #     print(Quaternion(*q))
-    #     pose.pose.orientation = Quaternion(*q)
-
-    #     self.current_yaw = q
-
-    #     return pose
-
 class Commander:
 
     AVAILABLE_DRONES    = ("gs0","gs1","gs2","gs3","gs4")
