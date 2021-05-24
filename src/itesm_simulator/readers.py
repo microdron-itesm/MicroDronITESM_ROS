@@ -14,7 +14,7 @@ class Reader():
         elif option == 1:
             self.WAIT_TIME = 2
         else:
-            self.WAIT_TIME = 1.5
+            self.WAIT_TIME = 2
             self.config = FlightConfig.LOOPING
 
     def _separateInstructions(self, l : list) -> list:

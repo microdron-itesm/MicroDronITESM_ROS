@@ -2,12 +2,7 @@ import argparse
 import math
 import numpy as np
 from collections import deque
-
-def roundTo0(f : float) -> float:
-    return 0 if abs(f) < .0001 else f
-
-def round2f(f : float) -> float:
-    return float("{:.2f}".format(f))
+from utils import *
 
 def heartEquation(x : float, scale : int,neg = False) -> float:
     result = math.sqrt(scale - math.pow(x,2))
