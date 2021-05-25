@@ -1,5 +1,6 @@
-from visualModule import decodeFileFromPath,droneCameraQR,webCameraQR
 from enums import *
+from utils.pathPlanner import genRandomCoords
+from utils.visualModule import decodeFileFromPath,droneCameraQR,webCameraQR
 import json
 
 class Reader():
@@ -15,7 +16,7 @@ class Reader():
             self.WAIT_TIME = 2
         else:
             self.WAIT_TIME = 2
-            self.config = FlightConfig.LOOPING
+            # self.config = FlightConfig.LOOPING
 
     def _separateInstructions(self, l : list) -> list:
         instructions = []
@@ -75,3 +76,15 @@ class CsvFileReader(Reader):
             l = f.readlines()
             f.close()
         return super()._separateInstructions(l)
+
+class RandomPositionReader(Reader):
+
+    def __init__(self):
+        super().__init__()
+
+    def readInstructions(self):
+        l = []
+        super()._defineWaitTime(2)
+        coordLen = 5
+        replicable = input("Replicable number? (y) ") == 'y'
+        return [tuple([coord]) for coord in genRandomCoords(coordLen, replicable)]

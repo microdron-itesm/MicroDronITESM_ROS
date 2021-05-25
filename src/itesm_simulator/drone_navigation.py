@@ -130,7 +130,7 @@ if __name__ == "__main__":
 
     option = -1
     try:
-        option = int(input("Choose the option that you want:\n\t1. Read from CSV\n\t2. Read from ImgFile\n\t3. Read from WebCamera\n\t4. Read from DroneCamera \n"))
+        option = int(input("Choose the option that you want:\n\t1. Read from CSV\n\t2. Read from ImgFile\n\t3. Read from WebCamera\n\t4. Read from DroneCamera \n\t5. Random Positions \n"))
         if option < 1 or option > 4:
             raise Exception("Not an option")
     except Exception:
@@ -148,8 +148,12 @@ if __name__ == "__main__":
         reader = WebCamReader()
     elif(option == 4): # Drone Camera
         reader = DronCamReader()
+    elif(option == 5): # Random Position Generator
+        reader = RandomPositionReader()
 
     instructions = reader.readInstructions()
+
+    print(instructions)
 
     c = Commander(instructions, False)
     time.sleep(1)
