@@ -1,24 +1,49 @@
-import rospy 
-from geometry_msgs.msg import PoseStamped
+import rospy
+from nav_msgs.msg import Path
+from nav_msgs.msg import Odometry
+from typing import List
+from geometry_msgs.msg import PoseStamped, PointStamped
 from sensor_msgs.msg import Imu, NavSatFix
 from std_msgs.msg import Float32, String
 from pyquaternion import Quaternion
 from tf.transformations import quaternion_from_euler
-from visualModule import decodeFileFromPath,droneCameraQR,webCameraQR
-import json
+from readers    import *
+from enums      import *
+from utils.utils      import *
 import time
 import math
 
-WAIT_TIME = 1
+
+
 
 class Follower:
-    def __init__(self,x,y,z,topic,heightFactor = 1):
-        self.current_x = x
-        self.current_y = y
-        self.current_z = z
+    def __init__(self,topic : str,heightFactor = 1):
+        self.current_x = .0
+        self.current_y = .0
+        self.current_z = .0
+        self.desired_x = .0
+        self.desired_y = .0
+        self.desired_z = .0
+        self.id = topic
         self.heightFactor = heightFactor
         self.current_yaw = quaternion_from_euler(0, 0, 0)
+        self.path = Path()
+        self.odom_sub = rospy.Subscriber(f'/{topic}/odometry_sensor1/odometry', Odometry, self.odom_cb)
         self.position_target_pub = rospy.Publisher(f'/{topic}/command/pose', PoseStamped, queue_size=10)
+        self.pathPublisher = rospy.Publisher(f'/{topic}/path', Path, queue_size=10)
+        rospy.Subscriber(f"/{topic}/odometry_sensor1/position", PointStamped, self.position_callback)
+
+    def position_callback(self, data):
+        self.current_x = round2f(data.point.x)
+        self.current_y = round2f(data.point.y)
+        self.current_z = round2f(data.point.z)
+
+    def ready(self) -> bool:
+        return euclidianDistance(
+            self.current_x, self.desired_x,
+            self.current_y, self.desired_y,
+            self.current_z, self.desired_z
+        ) < .1
 
     def move(self, x, y, z, BODY_OFFSET_ENU=True):
         self.position_target_pub.publish(self.set_pose(x, y, z, BODY_OFFSET_ENU))
@@ -26,9 +51,24 @@ class Follower:
     def turn(self, yaw_degree):
         self.position_target_pub.publish(self.set_orientation(yaw_degree))
 
+    def odom_cb(self, data):
+        self.path.header = data.header
+        pose = PoseStamped()
+        pose.header = data.header
+        pose.pose = data.pose.pose
+        self.path.poses.append(pose)
+        self.pathPublisher.publish(self.path)
+
     # return to home position with defined height
     def return_home(self, height):
         self.position_target_pub.publish(self.set_pose(0, 0, height, False))
+
+    def get_location(self) -> dict:
+        return {
+            "x" : self.current_x,
+            "y" : self.current_y,
+            "z" : self.current_z
+        }
 
 
     def set_pose(self, x=0, y=0, z=2, bodyFlu = True):
@@ -46,18 +86,16 @@ class Follower:
         pose.pose.position.x = x
         pose.pose.position.y = y
         pose.pose.position.z = z
+        self.desired_x = x
+        self.desired_y = y
+        self.desired_z = z
         # pose.pose.orientation = Quaternion(*self.current_yaw)
-
-        self.current_x = x
-        self.current_y = y
-        self.current_z = z
-        
-
         return pose
 
 
     def getHeightFactor(self) -> int:
         return self.heightFactor
+
     # def set_orientation(self, yaw):
     #     pose = PoseStamped()
     #     pose.header.stamp = rospy.Time.now()
@@ -84,10 +122,13 @@ class Follower:
 
 class Commander:
 
-    AVAILABLE_DRONES    = ("gs1","gs0")
+    AVAILABLE_DRONES    = ("gs1","gs0","gs2","gs3","gs4")
     INITIAL_POSITIONS   = (
-        (0,0,0),
-        (0,0,1)
+        (0,0,1),
+        (1,0,0),
+        (2,0,0),
+        (3,0,0),
+        (4,0,0)
     )
     CONSTANT_Z = .8
 
@@ -98,10 +139,9 @@ class Commander:
         self.wayPoints = instructions
         self.loopDrones = looping
         self.numDrones = len(instructions)
-        self.drones = []
+        self.drones : List[Follower] = []
         for x in range(self.numDrones):
-            t = Commander.INITIAL_POSITIONS[x]
-            self.drones.append(Follower(t[0],t[1],t[2],Commander.AVAILABLE_DRONES[x],x+1))
+            self.drones.append(Follower(Commander.AVAILABLE_DRONES[x],x+1))
         self.currentWaypoint = 0
 
     def nextPosition(self) -> int:
@@ -109,6 +149,8 @@ class Commander:
             return -1
         i = 0
         for d in self.drones:
+            if(d.id == Commander.AVAILABLE_DRONES[0]):
+                d.get_location()
             waypoints = self.wayPoints[i][self.currentWaypoint]
             if(len(waypoints) == 3):
                 d.move(waypoints[0], waypoints[1], waypoints[2])
@@ -120,42 +162,14 @@ class Commander:
             self.currentWaypoint = 0
         return self.currentWaypoint
 
-def separateInstructions(l) -> list:
-    instructions = []
-    for x in l:
-        s = x.strip().split(",")
-        temp = []
-        for y in s:
-            tempFactors = y.split(";")
-            if(len(tempFactors) > 1):
-                temp.append(tuple([float(z) for z in tempFactors]))
-        if(len(temp) > 0):
-            instructions.append(tuple(temp))
-    return instructions
+    def getAllPositions(self):
+        return [dronePosition.get_location() for dronePosition in self.drones]
 
-def readInstructions() -> list:
-    f = open("visualize.csv","r")
-    instructions = f.readlines()
-    f.close()
-    return separateInstructions(instructions)
-
-def readFromImgFile() -> list:
-    d = json.loads(decodeFileFromPath("QR.png")[0].data.decode("UTF-8"))
-    # d = {'instructions': {'0': '0.2;0.2;0.2,1.2;0.2;0.2,1.2;1.2;0.2,0.2;1.2;0.2,0.2;1.2;1.2,1.2;1.2;1.2,1.2;0.2;1.2,0.2;0.2;1.2,0.2;0.2;0.2,0.2;1.2;0.2,1.2;1.2;0.2,1.2;1.2;1.2,1.2;0.2;0.2,1.2;0.2;1.2,0.2;1.2;1.2,0.2;0.2;1.2,'}}
-    return separateInstructions(list(d["instructions"].values()))
-
-def readFromCamera() -> list:
-    global WAIT_TIME
-    d = json.loads(webCameraQR())
-    WAIT_TIME = 2
-    return separateInstructions(list(d["instructions"].values()))
-
-def readFromCamera() -> list:
-    global WAIT_TIME
-    d = json.loads(droneCameraQR())
-    WAIT_TIME = 2
-    return separateInstructions(list(d["instructions"].values()))
-
+    def waitForDrones(self) -> bool:
+        for dron in self.drones:
+            if not dron.ready():
+                return True
+        return False
 
 
 if __name__ == "__main__":
@@ -167,22 +181,35 @@ if __name__ == "__main__":
             raise Exception("Not an option")
     except Exception:
         print("please pick a valid option")
+
     
     instructions = []
+    reader = Reader()
 
-    if(option == 1):
-        instructions = readInstructions()
-    elif(option == 2):
-        instructions = readFromImgFile()
-    elif(option == 3):
-        instructions = readFromCamera()
-    elif(option == 4):
-        instructions = readFromCamera()
-    c = Commander(instructions)
+    if(option == 1): # CSV
+        reader = CsvFileReader()
+    elif(option == 2): # Img PNG
+        reader = ImgFileReader()
+    elif(option == 3): # WebCam
+        reader = WebCamReader()
+    elif(option == 4): # Drone Camera
+        reader = DronCamReader()
+
+    instructions = reader.readInstructions()
+
+    c = Commander(instructions, False)
     time.sleep(1)
+    stop = False
+    moving = False
     try:
-        while(c.nextPosition() >= 0):
-                time.sleep(WAIT_TIME)
+        while(not stop):
+            if not moving:
+                moving = True
+                stop = c.nextPosition() < 0
+            elif c.waitForDrones():
+                time.sleep(.5)
+            else:
+                moving = False
     except KeyboardInterrupt:
         pass
     print("Recorrido concluido")
