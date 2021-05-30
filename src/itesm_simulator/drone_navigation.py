@@ -57,7 +57,7 @@ class Follower:
                 elif(distance < 1.0 and (self.stored.get(d) == None)):
                     print(distance,self.id,d, 'less')
                     self.stored[d] = [self.desired_x,self.desired_y,self.desired_z]
-                    self.move(positions[d][0]-positions[d][0],positions[d][1]+positions[d][1],self.current_z)
+                    self.move(positions[d][0]+positions[d][0],positions[d][1]+positions[d][1],self.current_z)
                 elif(distance > 1. and self.stored.get(d) != None):
                     print(distance,self.id,d, 'reseting')
                     self.move(self.stored[d][0],self.stored[d][1],self.stored[d][2])
@@ -123,7 +123,7 @@ class Follower:
 
 class Commander:
 
-    AVAILABLE_DRONES    = ("gs0","gs1","gs2","gs3","gs4")
+    AVAILABLE_DRONES    = ("gs0","gs1","gs2","gs3","gs4","gs5","gs6","gs7","gs8")
     CONSTANT_Z = .8
 
     def __init__(self,instructions : list,looping = False):
@@ -142,15 +142,16 @@ class Commander:
         if(self.currentWaypoint >= len(self.wayPoints[0])):
             return -1
         i = 0
-        self.calculateCollision()
+        # self.calculateCollision()
         for d in self.drones:
             if(d.id == Commander.AVAILABLE_DRONES[0]):
                 d.get_location()
             waypoints = self.wayPoints[i][self.currentWaypoint]
-            if(len(waypoints) == 3):
-                d.move(waypoints[0], waypoints[1], waypoints[2])
-            else:
-                d.move(waypoints[0], waypoints[1], Commander.CONSTANT_Z * d.getHeightFactor())
+            self.separeteCoords()
+            # if(len(waypoints) == 3):
+            #     d.move(waypoints[0], waypoints[1], waypoints[2])
+            # else:
+            #     d.move(waypoints[0], waypoints[1], Commander.CONSTANT_Z * d.getHeightFactor())
             i += 1
         self.currentWaypoint += 1
         if(self.currentWaypoint >= len(self.wayPoints[0]) and self.loopDrones):
@@ -166,31 +167,52 @@ class Commander:
                 return True
         return False
 
-    def calculateD(self, m, n, o, p, Points):
-        return (Points[m][0] - Points[n][0])*(Points[o][0] - Points[p][0])+ \
-               (Points[m][1] - Points[n][1])*(Points[o][1] - Points[p][1])+ \
-               (Points[m][2] - Points[n][2])*(Points[o][2] - Points[p][2])
-
-    def calculateCollision(self):
+    def separeteCoords(self):
         points =  self.getAllPositions()
-        for p in range(len(points)):
-            points[p] = [points[p], self.wayPoints[p][self.currentWaypoint]]
         for i in range(len(self.drones)):
-            dronePoints = [points[i][0], points[i][1]]
             for j in range(i+1,len(self.drones)):
-                usePoints = dronePoints + [points[j][0], points[j][1]]
-                mua = (self.calculateD(0,2,3,2,usePoints)*self.calculateD(3,2,1,0,usePoints) - self.calculateD(0,2,1,0,usePoints)*self.calculateD(3,2,3,2,usePoints)) / \
-                    (self.calculateD(1,0,1,0,usePoints)*self.calculateD(3,2,3,2,usePoints) - self.calculateD(3,2,1,0,usePoints)*self.calculateD(3,2,1,0,usePoints))
-                mub = (self.calculateD(0,2,3,2,usePoints)+mua*self.calculateD(3,2,1,0,usePoints)) / self.calculateD(3,2,3,2,usePoints)
-                Pa = np.add(usePoints[0], mua*(np.subtract(usePoints[0],usePoints[1])))
-                Pb = np.add(usePoints[2], mub*(np.subtract(usePoints[3],usePoints[2])))
-                distance = self.ecluedianNorm(np.subtract(Pb,Pa))**2
-                if(distance < 15.0):
-                    self.drones[i].setObservations([Commander.AVAILABLE_DRONES[j]])
-                    self.drones[j].setObservations([], True)
+                distance = self.calculate2dDistance(points[i][0], points[j][0], points[i][1], points[j][1])
+                while(distance < 1):
+                    points[i][0] = points[i][0] + 0.3
+                    points[i][1] = points[i][1] + 0.3
+                    distance = self.calculate2dDistance(points[i][0], points[j][0], points[i][1], points[j][1])
+            self.drones[i].move(points[i][0],points[i][1], points[i][2])
+        while(self.waitForDrones()):
+            time.sleep(.5)
+        for i in range(len(self.drones)):
+            self.drones[i].move(points[i][0],points[i][1], self.wayPoints[i][self.currentWaypoint][2])
+        while(self.waitForDrones()):
+            time.sleep(.5)
+        for i in range(len(self.drones)):
+            self.drones[i].move(self.wayPoints[i][self.currentWaypoint][0],self.wayPoints[i][self.currentWaypoint][1], self.wayPoints[i][self.currentWaypoint][2])
+    def calculate2dDistance(self, x1, x2, y1, y2):
+        return math.sqrt((x2 - x1)**2 + (y2 - y1)**2)
+
+    # def calculateD(self, m, n, o, p, Points):
+    #     return (Points[m][0] - Points[n][0])*(Points[o][0] - Points[p][0])+ \
+    #            (Points[m][1] - Points[n][1])*(Points[o][1] - Points[p][1])+ \
+    #            (Points[m][2] - Points[n][2])*(Points[o][2] - Points[p][2])
+
+    # def calculateCollision(self):
+    #     points =  self.getAllPositions()
+    #     for p in range(len(points)):
+    #         points[p] = [points[p], self.wayPoints[p][self.currentWaypoint]]
+    #     for i in range(len(self.drones)):
+    #         dronePoints = [points[i][0], points[i][1]]
+    #         for j in range(i+1,len(self.drones)):
+    #             usePoints = dronePoints + [points[j][0], points[j][1]]
+    #             mua = (self.calculateD(0,2,3,2,usePoints)*self.calculateD(3,2,1,0,usePoints) - self.calculateD(0,2,1,0,usePoints)*self.calculateD(3,2,3,2,usePoints)) / \
+    #                 (self.calculateD(1,0,1,0,usePoints)*self.calculateD(3,2,3,2,usePoints) - self.calculateD(3,2,1,0,usePoints)*self.calculateD(3,2,1,0,usePoints))
+    #             mub = (self.calculateD(0,2,3,2,usePoints)+mua*self.calculateD(3,2,1,0,usePoints)) / self.calculateD(3,2,3,2,usePoints)
+    #             Pa = np.add(usePoints[0], mua*(np.subtract(usePoints[0],usePoints[1])))
+    #             Pb = np.add(usePoints[2], mub*(np.subtract(usePoints[3],usePoints[2])))
+    #             distance = self.ecluedianNorm(np.subtract(Pb,Pa))**2
+    #             if(distance < 15.0):
+    #                 self.drones[i].setObservations([Commander.AVAILABLE_DRONES[j]])
+    #                 self.drones[j].setObservations([], True)
     
-    def ecluedianNorm(self, p):
-        return math.sqrt((p[0]**2+p[1]**2+p[2]**2))
+    # def ecluedianNorm(self, p):
+    #     return math.sqrt((p[0]**2+p[1]**2+p[2]**2))
 
 if __name__ == "__main__":
 
