@@ -85,6 +85,6 @@ class RandomPositionReader(Reader):
     def readInstructions(self):
         l = []
         super()._defineWaitTime(2)
-        coordLen = 5
+        coordLen = 9
         replicable = input("Replicable number? (y) ") == 'y'
         return [tuple([coord]) for coord in genRandomCoords(coordLen, replicable)]

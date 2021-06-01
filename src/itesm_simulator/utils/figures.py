@@ -36,25 +36,30 @@ def makeHeart(size : int, precision : int) -> list:
 def makeSquare(size : int,stepSize : int) -> list:
     result = [
         [], # for the x axis
-        []  # for the y axis
+        [],  # for the y axis
+        []
     ]
     half = size//2
     y = half
     for x in range(-half,half,stepSize):
         result[0].append(x)
         result[1].append(y)
+        result[2].append(2)
     x = half
     for y in range(-half,half,stepSize):
         result[0].append(x)
         result[1].append(-y)
+        result[2].append(2)
     y = -half
     for x in range(-half,half,stepSize):
         result[0].append(-x)
         result[1].append(y)
+        result[2].append(2)
     x = -half
     for y in range(-half,half,stepSize):
         result[0].append(x)
         result[1].append(y)
+        result[2].append(2)
     return result
 
 def makeCircle(radius : float,stepSize : int) -> list:
