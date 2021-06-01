@@ -44,8 +44,11 @@ def aStar(curr : list, distances : list, memory : dict):
             allDistances.append(aStar(temp, distances, memory))
     return min(allDistances)
 
+def to_int_arr(arr) -> list:
+    return [int(x) for x in arr]
+
 def path_plan(current_positions, next_positions, verbose = False):
-    distances = [calculate_distances(currP,nextPositions) for currP in current_positions]
+    distances = [calculate_distances(currP,next_positions) for currP in current_positions]
     if verbose :
         print("\n========================= MAPPING DISTANCES =========================\n")
         for position in range(len(current_positions)):
@@ -61,7 +64,7 @@ def path_plan(current_positions, next_positions, verbose = False):
                 print(f"Key {key}\tequals a distance of\t{hashMemory[key]}")
             totalPathCombinations[hashMemory[key]] = partsOfKey
 
-    return totalPathCombinations[result], result
+    return to_int_arr(totalPathCombinations[result]), result
 
 def factorial(n):
     if n < 2:

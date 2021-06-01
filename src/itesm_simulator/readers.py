@@ -1,22 +1,21 @@
-from enums import *
 from utils.pathPlanner import genRandomCoords
 from utils.visualModule import decodeFileFromPath,droneCameraQR,webCameraQR
+from utils.flightConfig import FlightConfig
 import json
 
 class Reader():
 
-    def __init__(self):
+    def __init__(self, enum = FlightConfig.ASYNC, inst = []):
         self.WAIT_TIME = 0
-        self.config = FlightConfig.ASYNC
+        self.rawInstructions = inst
+        self._defineWaitTime(enum)
 
-    def _defineWaitTime(self,option : int):
-        if option == 0:
+    def _defineWaitTime(self, enum):
+        self.config = enum
+        if enum == FlightConfig.ASYNC:
             self.WAIT_TIME = 1
-        elif option == 1:
-            self.WAIT_TIME = 2
         else:
             self.WAIT_TIME = 2
-            # self.config = FlightConfig.LOOPING
 
     def _separateInstructions(self, l : list) -> list:
         instructions = []
@@ -31,60 +30,67 @@ class Reader():
                 instructions.append(tuple(temp))
         return instructions
 
+    def readInstructions(self):
+        return self._separateInstructions(self.rawInstructions)
+
 class ImgFileReader(Reader):
 
     def __init__(self):
-        super().__init__()
-
-    def readInstructions(self):
         d = json.loads(decodeFileFromPath("QR.png")[0].data.decode("UTF-8"))
-        l = d["instructions"]
-        super()._defineWaitTime(d["coordination"])
-        return super()._separateInstructions(l)
+        super().__init__(d["coordination"], d["instructions"])
 
 class WebCamReader(Reader):
 
     def __init__(self):
-        super().__init__()
-
-    def readInstructions(self):
         d = json.loads(webCameraQR())
-        l = d["instructions"]
-        super()._defineWaitTime(d["coordination"])
-        return super()._separateInstructions(l)
+        super().__init__(d["coordination"], d["instructions"])
 
 class DronCamReader(Reader):
 
     def __init__(self):
-        super().__init__()
-
-    def readInstructions(self):
         d = json.loads(droneCameraQR())
-        l = d["instructions"]
-        super()._defineWaitTime(d["coordination"])
-        return super()._separateInstructions(l)
+        super().__init__(d["coordination"], d["instructions"])
 
 class CsvFileReader(Reader):
 
     def __init__(self):
-        super().__init__()
-
-    def readInstructions(self):
         l = []
-        super()._defineWaitTime(2)
         with open("visualize.csv","r") as f:
             l = f.readlines()
             f.close()
-        return super()._separateInstructions(l)
+        super().__init__(FlightConfig.ASYNC, l)
+
+class SpecificCsvFileReader(Reader):
+
+    def __init__(self, name):
+        l = []
+        with open(name,"r") as f:
+            l = f.readlines()
+            f.close()
+        super().__init__(FlightConfig.ASYNC, l)
+
+class JSONReader(Reader):
+
+    def __init__(self):
+        d = {}
+        with open("special.json","r") as f:
+            temp = f.read().strip()
+            d = json.loads(temp)
+            f.close()
+        
+        l = SpecificCsvFileReader(d["fileName"]).readInstructions()
+
+        super().__init__(FlightConfig.ASYNC, l)
+    
+    def readInstructions(self):
+        return self.rawInstructions
 
 class RandomPositionReader(Reader):
 
     def __init__(self):
-        super().__init__()
+        coordLen = 6
+        replicable = input("Replicable number? (y) ") == 'y'
+        super().__init__(FlightConfig.ASYNC, [tuple([coord]) for coord in genRandomCoords(coordLen)])
 
     def readInstructions(self):
-        l = []
-        super()._defineWaitTime(2)
-        coordLen = 5
-        replicable = input("Replicable number? (y) ") == 'y'
-        return [tuple([coord]) for coord in genRandomCoords(coordLen, replicable)]
+        return self.rawInstructions
