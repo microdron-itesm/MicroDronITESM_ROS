@@ -88,7 +88,7 @@ class JSONReader(Reader):
 class RandomPositionReader(Reader):
 
     def __init__(self):
-        coordLen = 6
+        coordLen = 9
         replicable = input("Replicable number? (y) ") == 'y'
         super().__init__(FlightConfig.ASYNC, [tuple([coord]) for coord in genRandomCoords(coordLen)])
 

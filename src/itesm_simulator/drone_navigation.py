@@ -1,36 +1,19 @@
 #!/usr/bin/env python3
 import rospy
-from geometry_msgs.msg import PoseStamped, PointStamped,Transform, Quaternion, Point, Twist
-from trajectory_msgs.msg import MultiDOFJointTrajectory, MultiDOFJointTrajectoryPoint
-from sensor_msgs.msg import Imu, NavSatFix
-from std_msgs.msg import Float32, String
-from pyquaternion import Quaternion
+from typing import List
+from geometry_msgs.msg import PoseStamped, PointStamped
+from nav_msgs.msg import Path
 from tf.transformations import quaternion_from_euler, vector_norm
 from readers    import *
-from utils.flightConfig     import *
-from utils.utils            import *
-from utils.pathPlanner      import path_plan
-from random                 import shuffle
+from enums      import *
+from utils.utils      import *
 import time
 import math
 import numpy as np
+from utils.pathPlanner  import path_plan
+from nav_msgs.msg import Odometry
 
-from dataclasses import dataclass
-
-@dataclass(frozen=True, order=True)
-class Point:
-    """
-    Hashable 3D Point data structure
-    """
-    x   : float
-    y   : float
-    z   : float
-
-def toPoint(arr : list) -> Point:
-    return Point(arr[0], arr[1], arr[2])
-
-def acceptableDif(a,b):
-    return abs(a - b) < 1
+currentWaypoint = 0
 
 class Follower:
     def __init__(self,topic : str,heightFactor = 1):
@@ -44,42 +27,32 @@ class Follower:
         self.heightFactor = heightFactor
         self.current_yaw = quaternion_from_euler(0, 0, 0)
         self.position_target_pub = rospy.Publisher(f'/{topic}/command/pose', PoseStamped, queue_size=10)
+        self.path = Path()
         rospy.Subscriber(f"/{topic}/odometry_sensor1/position", PointStamped, self.position_callback)
+        rospy.Subscriber(f'/{topic}/odometry_sensor1/odometry', Odometry, self.odom_cb)
+        self.pathPublisher = rospy.Publisher(f'/{topic}/path', Path, queue_size=10)
 
     def position_callback(self, data):
         self.current_x = round2f(data.point.x)
         self.current_y = round2f(data.point.y)
         self.current_z = round2f(data.point.z)
-        # for d in self.observing:
-        #     if(d in positions):
-        #         distance = euclidianDistance(
-        #             self.current_x, positions[d][0],
-        #             self.current_y, positions[d][1], 
-        #             self.current_z, positions[d][2]
-        #         )
-        #         if(distance > 0.5 and self.stored.get(d) != None and len(self.stored.keys()) == 1):
-        #             print(distance,self.id,d, 'reseting')
-        #             self.move(self.stored[d][0],self.stored[d][1],self.stored[d][2])
-        #             self.observing.remove(d)
-        #             del self.stored[d]
-        #             print(self.stored)
-        #         elif(distance < 1.0 and (self.stored.get(d) == None)):
-        #             print(distance,self.id,d, 'less')
-        #             self.stored[d] = [self.desired_x,self.desired_y,self.desired_z]
-        #             self.move(positions[d][0]+positions[d][0],positions[d][1]+positions[d][1],self.current_z)
-        #         elif(distance > 1. and self.stored.get(d) != None):
-        #             print(distance,self.id,d, 'reseting')
-        #             self.move(self.stored[d][0],self.stored[d][1],self.stored[d][2])
-        #             self.observing.remove(d)
-        #             del self.stored[d]
-        #             print(self.stored)
+        self.path.header = data.header
+        
+    
+    def odom_cb(self, data):
+        if(currentWaypoint > 0):
+            pose = PoseStamped()
+            pose.header = data.header
+            pose.pose = data.pose.pose
+            self.path.poses.append(pose)
+            self.pathPublisher.publish(self.path)
 
     def ready(self) -> bool:
         return euclidianDistance(
             self.current_x, self.desired_x,
             self.current_y, self.desired_y,
             self.current_z, self.desired_z
-        ) < .4
+        ) < .2
 
     def move(self,  BODY_OFFSET_ENU=True):
         self.position_target_pub.publish(self.set_pose(BODY_OFFSET_ENU))
@@ -100,28 +73,6 @@ class Follower:
             self.current_y,
             self.current_z
         ]
-
-    def get_location_as_point(self) -> Point:
-        return toPoint(self.get_location())
-
-    def get_desired_location(self) -> list:
-        return [
-            self.desired_x,
-            self.desired_y,
-            self.desired_z
-        ]
-
-    def get_desired_location_as_point(self) -> Point:
-        return toPoint(self.get_desired_location())
-
-    def setObservations(self, obsverving, obsvered=False):
-        self.observing = self.observing + obsverving
-        if(not self.observed): self.observed = obsvered
-
-    def set_desired(self, x, y, z):
-        self.desired_x = x
-        self.desired_y = y
-        self.desired_z = z
 
     def set_pose(self, bodyFlu = True):
         pose = PoseStamped()
@@ -287,66 +238,30 @@ class Commander:
             self.drones.append(Follower(Commander.AVAILABLE_DRONES[x],x+1))
         self.currentWaypoint = 0
         self.distribuiteWaypoints(instructions)
-        # self.takeOff()
-
-
-    def _strategicPositioning(self):
-
-        currentPositionsSet = set([toPoint(point) for point in self.getAllPositions()])
-
-        dronesOrder = list(self.drones)
-
-        shuffle(dronesOrder)
-
-        for d in dronesOrder:
-            willMove, newPaths, finalPoint = d.plan_movement(currentPositionsSet)
-            if willMove:
-                d.set_desired(finalPoint.x, finalPoint.y, finalPoint.z)
-                currentPositionsSet.remove(d.get_location_as_point())
-            
-            currentPositionsSet.update(newPaths)
-
-        for d in self.drones:
-            d.move()
-        
-        return 0
 
     def nextPosition(self) -> int:
+        global currentWaypoint
         if(self.currentWaypoint >= len(self.wayPoints[0])):
             return -1
 
         i = 0
-        for d in self.drones:
-            if(d.id == Commander.AVAILABLE_DRONES[0]):
-                d.get_location()
-            waypoints = self.wayPoints[i][self.currentWaypoint]
-            # self.separeteCoords()
-            if(len(waypoints) == 3):
-                d.set_desired(waypoints[0], waypoints[1], waypoints[2])
-            else:
-                d.set_desired(waypoints[0], waypoints[1], Commander.CONSTANT_Z * d.getHeightFactor())
-            i += 1
-
-        if self.currentWaypoint == 0:
-            if not all([d.ready() for d in self.drones]):
-                return self._strategicPositioning()
-            else:
-                self.currentWaypoint = 1
-                return self.nextPosition()
-
-        for d in self.drones:
-                d.move()
-        
+        currentWaypoint = self.currentWaypoint
+        if(self.currentWaypoint == 0):
+            self.separeteCoords()
+        else:
+            for d in self.drones:
+                if(d.id == Commander.AVAILABLE_DRONES[0]):
+                    d.get_location()
+                waypoints = self.wayPoints[i][self.currentWaypoint]
+                if(len(waypoints) == 3):
+                    d.move(waypoints[0], waypoints[1], waypoints[2])
+                else:
+                    d.move(waypoints[0], waypoints[1], Commander.CONSTANT_Z * d.getHeightFactor())
+                i += 1
         self.currentWaypoint += 1
         if(self.currentWaypoint > len(self.wayPoints[0]) and self.loopDrones):
             self.currentWaypoint = 0
         return self.currentWaypoint
-
-    def takeOff(self):
-        for d in self.drones:
-            point = d.get_location_as_point()
-            if acceptableDif(point.z, 0):
-                d.moveTo(point.x, point.y, point.z + 1)
 
     def getAllPositions(self):
         return [dronePosition.get_location() for dronePosition in self.drones]
@@ -357,15 +272,29 @@ class Commander:
                 return True
         return False
 
+    def waitForSelectedDrones(self, doNotCheck) -> bool:
+        for i in range(len(self.drones)):
+            if not i in doNotCheck and not self.drones[i].ready():
+                return True
+        return False
+
     def separeteCoords(self):
         points =  self.getAllPositions()
-        for i in range(len(self.drones)):
-            for j in range(i+1,len(self.drones)):
-                distance = self.calculate2dDistance(points[i][0], points[j][0], points[i][1], points[j][1])
-                while(distance < 1):
-                    points[i][0] = points[i][0] + 0.3
-                    points[i][1] = points[i][1] + 0.3
+        collides = True
+        #Gets posistions for drones in z axis so they dont collide
+        while(collides):
+            pointsChanged = False
+            for i in range(len(self.drones)):
+                for j in range(i+1,len(self.drones)):
                     distance = self.calculate2dDistance(points[i][0], points[j][0], points[i][1], points[j][1])
+                    while(distance < 0.6):
+                        points[i][0] = points[i][0] + 0.3 + distance
+                        points[i][1] = points[i][1] + 0.3 + distance
+                        pointsChanged = True
+                        distance = self.calculate2dDistance(points[i][0], points[j][0], points[i][1], points[j][1])
+            if(not pointsChanged): collides = False
+        
+        for i in range(len(self.drones)):
             self.drones[i].move(points[i][0],points[i][1], points[i][2])
         while(self.waitForDrones()):
             time.sleep(.5)
@@ -373,25 +302,74 @@ class Commander:
             self.drones[i].move(points[i][0],points[i][1], self.wayPoints[i][self.currentWaypoint][2])
         while(self.waitForDrones()):
             time.sleep(.5)
-        for i in range(len(self.drones)):
-            self.drones[i].move(self.wayPoints[i][self.currentWaypoint][0],self.wayPoints[i][self.currentWaypoint][1], self.wayPoints[i][self.currentWaypoint][2])
 
+
+        #Creates a queue for drones who might collide
+        points =  self.getAllPositions()
+        wait = []
+        for i in range(len(self.drones)):
+            desiredLocations = self.wayPoints[i][self.currentWaypoint]
+            for j in range(i+1,len(self.drones)):
+                #Checks that drones are in same or a very close z axis
+                if(abs(points[i][2] -points[j][2]) < 0.6):
+                    #Calculates the point in which the trayectories will collide
+                    x = [points[i][0],desiredLocations[0],points[j][0],self.wayPoints[j][self.currentWaypoint][0]]
+                    y = [points[i][1],desiredLocations[1],points[j][1],self.wayPoints[j][self.currentWaypoint][1]]
+                    denominador = (y[3]-y[2])*(x[1]-x[0])-(x[3]-x[2])*(y[1]-y[0])
+                    numerador1 = (x[3]-x[2])*(y[0]-y[2])-(y[3]-y[2])*(x[0]-x[2])
+                    numerador2 = (x[1]-x[0])*(y[0]-y[2])-(y[1]-y[0])*(x[0]-x[2])
+                    if (denominador != 0):
+                        ua = numerador1 / denominador
+                        ub = numerador2 / denominador
+                        if(ua >= 0 and ua <= 1 and ub >= 0 and ub <= 1):
+                            ix = x[0]+ua*(x[1]-x[0])
+                            iy = y[0]+ua*(y[1]-y[0])
+                            #Calculates if the distances between the collision point and the starting and ending point
+                            distanceI = self.calculate2dDistance(points[i][0], ix, points[i][1], iy)
+                            distaceJ = self.calculate2dDistance(points[j][0], ix, points[j][1], iy)
+                            distanceEI = self.calculate2dDistance(desiredLocations[0], ix, desiredLocations[1], iy)
+                            distanceEJ = self.calculate2dDistance(self.wayPoints[j][self.currentWaypoint][0], ix, self.wayPoints[j][self.currentWaypoint][1], iy)
+                            #Calculates time to arrive to collision point
+                            timeI = distanceI / 2.1
+                            timeJ = distaceJ / 2.1
+                            #If time is very similar or 
+                            if(distanceEI < 0.2 or abs(timeI - timeJ) < 0.3):
+                                wait.append(i)
+                                if (distanceI < 0.2 or distanceEJ < 0.2):
+                                    wait.append(j)
+
+
+        for i in range(len(self.drones)):
+            desiredLocations = self.wayPoints[i][self.currentWaypoint]
+            if(not i in wait):
+                self.drones[i].move(desiredLocations[0],desiredLocations[1], desiredLocations[2])
+
+        while(self.waitForSelectedDrones(wait)):
+            time.sleep(.5)
+
+        for droneW in wait:
+            time.sleep(.5)
+            desiredLocations = self.wayPoints[droneW][self.currentWaypoint]
+            self.drones[droneW].move(desiredLocations[0],desiredLocations[1], desiredLocations[2])
+
+            
     def calculate2dDistance(self, x1, x2, y1, y2):
         return math.sqrt((x2 - x1)**2 + (y2 - y1)**2)
 
-    def distribuiteWaypoints(self,instructions : list):
-        """
-        Assign the Order of the Waypoints so the minimum distance is to be traveled.
 
-        Args:
-            instructions (list): Desired Waypoints
-        """
-        dronesPositions = self.getAllPositions()
-        nextPositions = [inst[0] for inst in instructions]
-        order = path_plan(dronesPositions, nextPositions)
-        self.wayPoints = []
-        for inst in range(len(instructions)):
-            self.wayPoints.append(instructions[order[0][inst]])
+    def distribuiteWaypoints(self,instructions : list):
+            """
+            Assign the Order of the Waypoints so the minimum distance is to be traveled.
+
+            Args:
+                instructions (list): Desired Waypoints
+            """
+            dronesPositions = self.getAllPositions()
+            nextPositions = [inst[0] for inst in instructions]
+            order = path_plan(dronesPositions, nextPositions)
+            self.wayPoints = []
+            for inst in range(len(instructions)):
+                self.wayPoints.append(instructions[order[0][inst]])
 
 if __name__ == "__main__":
 
