@@ -159,6 +159,9 @@ class Commander:
         return False
 
     def separeteCoords(self):
+        """
+            Organizes drones so they don't crash
+        """
         points =  self.getAllPositions()
         collides = True
         #Gets posistions for drones in z axis so they dont collide
@@ -219,14 +222,17 @@ class Commander:
                                     wait.append(j)
 
 
+        # Moves the drones that don't crash
         for i in range(len(self.drones)):
             desiredLocations = self.wayPoints[i][self.currentWaypoint]
             if(not i in wait):
                 self.drones[i].move(desiredLocations[0],desiredLocations[1], desiredLocations[2])
 
+        # Wait for all the drones to finish
         while(self.waitForSelectedDrones(wait)):
             time.sleep(.5)
 
+        # Moves the drones that would crash 1 by 1
         for droneW in wait:
             time.sleep(.5)
             desiredLocations = self.wayPoints[droneW][self.currentWaypoint]
