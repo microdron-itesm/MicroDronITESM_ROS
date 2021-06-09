@@ -54,24 +54,27 @@ class Follower:
             self.current_z, self.desired_z
         ) < .2
 
-    def move(self, x, y, z, BODY_OFFSET_ENU=True):
-        self.position_target_pub.publish(self.set_pose(x, y, z, BODY_OFFSET_ENU))
+    def move(self,  BODY_OFFSET_ENU=True):
+        self.position_target_pub.publish(self.set_pose(BODY_OFFSET_ENU))
+
+    def moveTo(self, x, y, z):
+        self.set_desired(x, y, z)
+        self.move()
 
     def turn(self, yaw_degree):
         self.position_target_pub.publish(self.set_orientation(yaw_degree))
 
-    # return to home position with defined height
     def return_home(self, height):
         self.position_target_pub.publish(self.set_pose(0, 0, height, False))
 
-    def get_location(self) -> dict:
+    def get_location(self) -> list:
         return [
             self.current_x,
             self.current_y,
             self.current_z
         ]
 
-    def set_pose(self, x=0, y=0, z=2, bodyFlu = True):
+    def set_pose(self, bodyFlu = True):
         pose = PoseStamped()
         pose.header.stamp = rospy.Time.now()
 
@@ -83,18 +86,141 @@ class Follower:
         else:
             pose.header.frame_id = 'map'
         
-        pose.pose.position.x = x
-        pose.pose.position.y = y
-        pose.pose.position.z = z
-        self.desired_x = x
-        self.desired_y = y
-        self.desired_z = z
+        pose.pose.position.x = self.desired_x
+        pose.pose.position.y = self.desired_y
+        pose.pose.position.z = self.desired_z
         # pose.pose.orientation = Quaternion(*self.current_yaw)
         return pose
 
-
     def getHeightFactor(self) -> int:
         return self.heightFactor
+
+    @staticmethod
+    def littleAdjustment(a,b):
+        return all([
+            acceptableDif(a.x, b.x),
+            acceptableDif(a.y, b.y),
+            acceptableDif(a.z, b.z)
+        ])
+
+    @staticmethod
+    def getMovementRangeHelper(a,b) -> list:
+        return list(range(a, b, 1 if (a - b) < 0 else -1))
+
+    @staticmethod
+    def getMovementRange(a,b) -> list:
+        tempInit = int(a)
+        tempFinit= int(b)
+        proposals = Follower.getMovementRangeHelper(tempInit, tempFinit)
+        if len(proposals) > 0:
+            if proposals[0] == a:
+                proposals.pop(0)
+            if len(proposals) == 0 or proposals[-1] != b:
+                proposals.append(b)
+        return proposals
+
+    def _deadlockHelper(self, lockedPositions : set, tries = 0):
+        # We tried everything, so don't move
+        if tries > 5:
+            return False, {}, None
+        randValue = int(time.time())
+        desiredPosition = None
+        selfPositionAsInt = self.get_location()
+        # selfPositionAsInt = [int(i) for i in self.get_location()]
+        if(randValue % 5 == 0):
+            desiredPosition = Point(selfPositionAsInt[0], selfPositionAsInt[1], int(selfPositionAsInt[2] + 1))
+        elif(randValue % 3 == 0):
+            desiredPosition = Point(selfPositionAsInt[0], int(selfPositionAsInt[1] + 1), selfPositionAsInt[2])
+        else:
+            desiredPosition = Point(int(selfPositionAsInt[0] + 1), selfPositionAsInt[1], selfPositionAsInt[2])
+
+        if desiredPosition in lockedPositions:
+            return self._deadlockHelper(lockedPositions, tries + 1)
+        
+        return True, {desiredPosition}, desiredPosition
+
+    def _breakDeadlockProtocol(self, currentPoint, lockedPositions : set, movementProposals : list):
+        availableDistances = [len(proposals) for proposals in movementProposals]
+        
+        # The Drones can't move and we might be on a deadlock
+        if all([distance == 0 for distance in availableDistances]):
+            return self._deadlockHelper(lockedPositions)
+
+        maxTravelDistance = availableDistances[availableDistances.index(max(availableDistances))]
+
+        return True, set(maxTravelDistance), maxTravelDistance[-1]
+            
+    def plan_movement(self, lockedPositions : set):
+        """
+        Function to plan the movement for this drone to the next desired position.
+
+        Args:
+
+            nextPosition (Point): Next Point for this drone to be
+
+            lockedOriginalPoints (set): Locked Positions that the drones are originally at.
+
+            lockedPositions (set): Positions locked by movements of other drones
+
+        Returns:
+
+            bool: Whether or not the drone will move during this transition period,
+
+            set: Set of locked positions that the drone during movement will use,
+
+            Point: Desired Available WayPoint for the drone to move during this transition period
+        """
+        nextPosition = self.get_desired_location_as_point()
+        currentPoint = self.get_location_as_point()
+        # Already at the desired position
+        if Follower.littleAdjustment(currentPoint, nextPosition):
+            return False, {}, None
+
+        validPointsX = []
+        validPointsY = []
+        validPointsZ = []
+
+        # We should move on the Z axis
+        if not acceptableDif(nextPosition.z, currentPoint.z):
+            proposals = Follower.getMovementRange(currentPoint.z,nextPosition.z)
+            for propAxis in proposals:
+                propPoint = Point(currentPoint.x, currentPoint.y, propAxis)
+                if propPoint not in lockedPositions:
+                    validPointsZ.append(propPoint)
+                else:
+                    break
+            if len(proposals) > 0 and len(proposals) == len(validPointsZ): # Good to go
+                return True, set(validPointsZ), validPointsZ[-1]
+
+        # We should move on the X axis
+        if not acceptableDif(nextPosition.x, currentPoint.x):
+            proposals = Follower.getMovementRange(currentPoint.x,nextPosition.x)
+            for propAxis in proposals:
+                propPoint = Point(propAxis,currentPoint.y,currentPoint.z)
+                if propPoint not in lockedPositions:
+                    validPointsX.append(propPoint)
+                else:
+                    break
+            if len(proposals) > 0 and len(proposals) == len(validPointsX): # Good to go
+                return True, set(validPointsX), validPointsX[-1]
+
+        # We should move on the Y axis
+        if not acceptableDif(nextPosition.x, currentPoint.x):
+            proposals = Follower.getMovementRange(currentPoint.y,nextPosition.y)
+            for propAxis in proposals:
+                propPoint = Point(currentPoint.x, propAxis, currentPoint.z)
+                if propPoint not in lockedPositions:
+                    validPointsY.append(propPoint)
+                else:
+                    break
+            if len(proposals) > 0 and len(proposals) == len(validPointsY): # Good to go
+                return True, set(validPointsY), validPointsY[-1]
+        
+        return self._breakDeadlockProtocol(currentPoint, lockedPositions, [
+            validPointsZ,
+            validPointsX,
+            validPointsY
+        ])
 
 class Commander:
 
@@ -117,6 +243,7 @@ class Commander:
         global currentWaypoint
         if(self.currentWaypoint >= len(self.wayPoints[0])):
             return -1
+
         i = 0
         currentWaypoint = self.currentWaypoint
         if(self.currentWaypoint == 0):
@@ -132,7 +259,7 @@ class Commander:
                     d.move(waypoints[0], waypoints[1], Commander.CONSTANT_Z * d.getHeightFactor())
                 i += 1
         self.currentWaypoint += 1
-        if(self.currentWaypoint >= len(self.wayPoints[0]) and self.loopDrones):
+        if(self.currentWaypoint > len(self.wayPoints[0]) and self.loopDrones):
             self.currentWaypoint = 0
         return self.currentWaypoint
 
@@ -248,8 +375,8 @@ if __name__ == "__main__":
 
     option = -1
     try:
-        option = int(input("Choose the option that you want:\n\t1. Read from CSV\n\t2. Read from ImgFile\n\t3. Read from WebCamera\n\t4. Read from DroneCamera \n\t5. Random Positions \n"))
-        if option < 1 or option > 4:
+        option = int(input("Choose the option that you want:\n\t1. Read from CSV\n\t2. Read from ImgFile\n\t3. Read from WebCamera\n\t4. Read from DroneCamera\n\t5. Random Positions\n\t6. Specific File (JSON)  \n"))
+        if option < 1 or option > 6:
             raise Exception("Not an option")
     except Exception:
         print("please pick a valid option")
@@ -268,13 +395,13 @@ if __name__ == "__main__":
         reader = DronCamReader()
     elif(option == 5): # Random Position Generator
         reader = RandomPositionReader()
+    elif(option == 6): # Specific File Name
+        reader = JSONReader()
 
     instructions = reader.readInstructions()
 
-    print(instructions)
-
     c = Commander(instructions, False)
-    time.sleep(1)
+    time.sleep(2)
     stop = False
     moving = False
     try:

@@ -11,7 +11,6 @@ def heartEquation(x : float, scale : int,neg = False) -> float:
     temp = abs(x) ** (2/3)
     return result + temp
 
-
 def makeHeart(size : int, precision : int) -> list:
     limit = int(math.sqrt(size))
     size = limit ** 2
@@ -195,6 +194,27 @@ def toString(arr : list) -> str:
 
     return result
 
+def makeHeartWitHeight(size : int, precision : int, height : int) -> list:
+    limit = int(math.sqrt(size))
+    size = limit ** 2
+    xAxis = []
+    yAxis = []
+    steps = 1/precision
+    i = -limit
+    while(i<limit):
+        xAxis.append(i)
+        yAxis.append(round2f(heartEquation(i,size)))
+        i += steps
+    i = limit
+    while(i>-limit):
+        xAxis.append(i)
+        yAxis.append(round2f(heartEquation(i,size,True)))
+        i -= steps
+    return [
+        xAxis,
+        yAxis,
+        [height] * len(xAxis)
+    ]
 
 def makeSpecialCylinder() -> str:
     PRECISION = 4
@@ -300,6 +320,8 @@ parser.add_argument('--drones', metavar='drones', type=int,
                     default=1, help='The number of sets to divide the points in due to the number of drones to handle, defaults to 1')
 parser.add_argument('--figure', dest='figure', type=str,
                     help='options are >> cirlce square triangle heart specialCilinder')
+parser.add_argument('--height', dest='height', type=int,
+                    default=1, help='options are >> cirlce square triangle heart specialCilinder')
 
 if __name__ == "__main__":
     args = parser.parse_args()
@@ -320,6 +342,10 @@ if __name__ == "__main__":
         size = int(args.size)
         stepSize = args.stepSize
         resultStr = stringFormat(merge(makeHeart(size,stepSize)),args.drones)
+    elif(args.figure == "heartH"):
+        size = int(args.size)
+        stepSize = args.stepSize
+        resultStr = stringFormat(merge(makeHeartWitHeight(size, stepSize, args.height)),args.drones)
     elif(args.figure == "special"):
         size = 9
         stepSize = 4
