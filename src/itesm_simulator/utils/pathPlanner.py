@@ -1,3 +1,7 @@
+"""
+Este programa contiene A* usado para determinar las vias optimas de navegación entre puntos 3D
+Actualmente solo optimiza distancia total recorrida
+"""
 from random import randint, seed, shuffle
 from .utils import round2f, euclidianDistance
 

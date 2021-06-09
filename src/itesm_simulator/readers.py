@@ -1,3 +1,12 @@
+"""
+Este programa sirve como la interfaz de comunicacion entre los diferentes tipos de archivo que 
+se pueden leer como son .json, .csv, .png, etc.
+
+En caso de que se desee agregar una nueva interfaz de lectura, se debera agregar una nueva sublcase de Reader.
+
+Escrito por Jesús Omar Cuenca Espino
+"""
+
 from utils.pathPlanner import genRandomCoords
 from utils.visualModule import decodeFileFromPath,droneCameraQR,webCameraQR
 from utils.flightConfig import FlightConfig

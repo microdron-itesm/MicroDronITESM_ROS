@@ -1,3 +1,7 @@
+"""
+Programa que genera archivos .png con QR
+a partir de archivos .json
+"""
 import qrcode
 
 def createQR(s : str):

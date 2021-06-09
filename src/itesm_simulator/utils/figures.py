@@ -1,3 +1,6 @@
+"""
+Programa de apoyo para crear figuras 3D que los drones puedan navegar
+"""
 import argparse
 import math
 import numpy as np

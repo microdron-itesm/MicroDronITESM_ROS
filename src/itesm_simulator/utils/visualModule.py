@@ -1,3 +1,7 @@
+"""
+Este modulo sirve para que se puedan ejecutar funciones usando videofeed y QR
+"""
+
 import cv2
 from pyzbar.pyzbar import decode
 from sensor_msgs.msg import Image

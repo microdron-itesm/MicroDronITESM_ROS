@@ -1,3 +1,7 @@
+"""
+Este programa ayuda para la lectura de archivos .json
+Se usa principalmente para poder pasar de un archivo .csv a un .json
+"""
 import json
 
 def readInstructions() -> list:

@@ -9,7 +9,6 @@ backcall==0.2.0
 bcrypt==3.1.7
 blinker==1.4
 bondpy==1.8.6
-bpytop==1.0.63
 Brlapi==0.7.0
 camera-calibration==1.15.3
 camera-calibration-parsers==1.12.0
@@ -212,12 +211,6 @@ smach-ros==2.5.0
 smclib==1.8.6
 ssh-import-id==5.10
 systemd-python==234
-tf==1.13.2
-tf-conversions==1.13.2
-tf2-geometry-msgs==0.7.5
-tf2-kdl==0.7.5
-tf2-py==0.7.5
-tf2-ros==0.7.5
 topic-tools==1.15.9
 traitlets==5.0.5
 Twisted==18.9.0
@@ -234,5 +227,4 @@ wcwidth==0.2.5
 wsaccel==0.6.2
 xacro==1.14.6
 xkit==0.0.0
-youtube-dl==2021.2.22
 zope.interface==4.7.1

@@ -1,12 +1,19 @@
 #!/usr/bin/env python3
+"""
+Este programa es el principal modulo de navegación para los drones, 
+se debe de correr con un archivo .launch con propiedades Swarm y Waypoint.
+De momento se usa en unión con un gazebo instanciado de forma
+
+    >> roslaunch rotors_gazebo mav_swarm_waypoint.launch mav_name:=ardrone world_name:=basic paused:=false
+"""
 import rospy
 from typing import List
 from geometry_msgs.msg import PoseStamped, PointStamped
 from nav_msgs.msg import Path
 from tf.transformations import quaternion_from_euler, vector_norm
 from readers    import *
-from enums      import *
 from utils.utils      import *
+from utils.flightConfig    import *
 import time
 import math
 import numpy as np
@@ -94,133 +101,6 @@ class Follower:
 
     def getHeightFactor(self) -> int:
         return self.heightFactor
-
-    @staticmethod
-    def littleAdjustment(a,b):
-        return all([
-            acceptableDif(a.x, b.x),
-            acceptableDif(a.y, b.y),
-            acceptableDif(a.z, b.z)
-        ])
-
-    @staticmethod
-    def getMovementRangeHelper(a,b) -> list:
-        return list(range(a, b, 1 if (a - b) < 0 else -1))
-
-    @staticmethod
-    def getMovementRange(a,b) -> list:
-        tempInit = int(a)
-        tempFinit= int(b)
-        proposals = Follower.getMovementRangeHelper(tempInit, tempFinit)
-        if len(proposals) > 0:
-            if proposals[0] == a:
-                proposals.pop(0)
-            if len(proposals) == 0 or proposals[-1] != b:
-                proposals.append(b)
-        return proposals
-
-    def _deadlockHelper(self, lockedPositions : set, tries = 0):
-        # We tried everything, so don't move
-        if tries > 5:
-            return False, {}, None
-        randValue = int(time.time())
-        desiredPosition = None
-        selfPositionAsInt = self.get_location()
-        # selfPositionAsInt = [int(i) for i in self.get_location()]
-        if(randValue % 5 == 0):
-            desiredPosition = Point(selfPositionAsInt[0], selfPositionAsInt[1], int(selfPositionAsInt[2] + 1))
-        elif(randValue % 3 == 0):
-            desiredPosition = Point(selfPositionAsInt[0], int(selfPositionAsInt[1] + 1), selfPositionAsInt[2])
-        else:
-            desiredPosition = Point(int(selfPositionAsInt[0] + 1), selfPositionAsInt[1], selfPositionAsInt[2])
-
-        if desiredPosition in lockedPositions:
-            return self._deadlockHelper(lockedPositions, tries + 1)
-        
-        return True, {desiredPosition}, desiredPosition
-
-    def _breakDeadlockProtocol(self, currentPoint, lockedPositions : set, movementProposals : list):
-        availableDistances = [len(proposals) for proposals in movementProposals]
-        
-        # The Drones can't move and we might be on a deadlock
-        if all([distance == 0 for distance in availableDistances]):
-            return self._deadlockHelper(lockedPositions)
-
-        maxTravelDistance = availableDistances[availableDistances.index(max(availableDistances))]
-
-        return True, set(maxTravelDistance), maxTravelDistance[-1]
-            
-    def plan_movement(self, lockedPositions : set):
-        """
-        Function to plan the movement for this drone to the next desired position.
-
-        Args:
-
-            nextPosition (Point): Next Point for this drone to be
-
-            lockedOriginalPoints (set): Locked Positions that the drones are originally at.
-
-            lockedPositions (set): Positions locked by movements of other drones
-
-        Returns:
-
-            bool: Whether or not the drone will move during this transition period,
-
-            set: Set of locked positions that the drone during movement will use,
-
-            Point: Desired Available WayPoint for the drone to move during this transition period
-        """
-        nextPosition = self.get_desired_location_as_point()
-        currentPoint = self.get_location_as_point()
-        # Already at the desired position
-        if Follower.littleAdjustment(currentPoint, nextPosition):
-            return False, {}, None
-
-        validPointsX = []
-        validPointsY = []
-        validPointsZ = []
-
-        # We should move on the Z axis
-        if not acceptableDif(nextPosition.z, currentPoint.z):
-            proposals = Follower.getMovementRange(currentPoint.z,nextPosition.z)
-            for propAxis in proposals:
-                propPoint = Point(currentPoint.x, currentPoint.y, propAxis)
-                if propPoint not in lockedPositions:
-                    validPointsZ.append(propPoint)
-                else:
-                    break
-            if len(proposals) > 0 and len(proposals) == len(validPointsZ): # Good to go
-                return True, set(validPointsZ), validPointsZ[-1]
-
-        # We should move on the X axis
-        if not acceptableDif(nextPosition.x, currentPoint.x):
-            proposals = Follower.getMovementRange(currentPoint.x,nextPosition.x)
-            for propAxis in proposals:
-                propPoint = Point(propAxis,currentPoint.y,currentPoint.z)
-                if propPoint not in lockedPositions:
-                    validPointsX.append(propPoint)
-                else:
-                    break
-            if len(proposals) > 0 and len(proposals) == len(validPointsX): # Good to go
-                return True, set(validPointsX), validPointsX[-1]
-
-        # We should move on the Y axis
-        if not acceptableDif(nextPosition.x, currentPoint.x):
-            proposals = Follower.getMovementRange(currentPoint.y,nextPosition.y)
-            for propAxis in proposals:
-                propPoint = Point(currentPoint.x, propAxis, currentPoint.z)
-                if propPoint not in lockedPositions:
-                    validPointsY.append(propPoint)
-                else:
-                    break
-            if len(proposals) > 0 and len(proposals) == len(validPointsY): # Good to go
-                return True, set(validPointsY), validPointsY[-1]
-        
-        return self._breakDeadlockProtocol(currentPoint, lockedPositions, [
-            validPointsZ,
-            validPointsX,
-            validPointsY
-        ])
 
 class Commander:
 

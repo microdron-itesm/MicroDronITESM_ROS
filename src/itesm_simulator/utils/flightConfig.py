@@ -1,3 +1,7 @@
+"""
+Enumerador que contiene los tipos de configuraciones de vuelo con nombre, 
+en lugar de utilizar codigos
+"""
 from enum import Enum
 
 class FlightConfig(Enum):

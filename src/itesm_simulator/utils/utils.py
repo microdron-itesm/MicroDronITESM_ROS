@@ -1,3 +1,6 @@
+"""
+Este programa contiene operaciones utiles que ayudan con operaciones a lo largo de todo el programa
+"""
 from math import sqrt
 from time import time
 
