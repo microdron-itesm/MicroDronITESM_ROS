@@ -1,0 +1,6 @@
+env/
+__pycache__/
+*.png
+*.json
+*.csv
+*.odt
