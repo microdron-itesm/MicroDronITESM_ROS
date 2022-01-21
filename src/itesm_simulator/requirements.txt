@@ -60,7 +60,7 @@ idna==2.8
 image-geometry==1.15.0
 incremental==16.10.1
 interactive-markers==1.12.0
-ipython==7.20.0
+ipython==7.31.1
 ipython-genutils==0.2.0
 jedi==0.18.0
 joint-state-publisher==1.15.0
