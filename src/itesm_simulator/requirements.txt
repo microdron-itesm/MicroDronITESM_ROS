@@ -213,7 +213,7 @@ ssh-import-id==5.10
 systemd-python==234
 topic-tools==1.15.9
 traitlets==5.0.5
-Twisted==18.9.0
+Twisted==22.1.0
 txaio==2.10.0
 u-msgpack-python==2.1
 ubuntu-advantage-tools==20.3
